@@ -1,0 +1,50 @@
+  447  python app.py
+  448  python app.py
+  449  git status
+  450  git add .
+  451  git commit -m "Added the Save_CSV code"
+  452  git push 
+  453  git status
+  454  git add
+  455  git add .
+  456  git commit -m "Modified the README file"
+  457  git push
+  458  git pull 
+  459  git add .
+  460  git commit -m "updating files"
+  461  git push
+  462  git status
+  463  git add .
+  464  git commit -m "Updated Readme file"
+  465  git push
+  466  git pull
+  467  history 50 > terminal_history.txt
+  468  pwd
+  469  cd ..
+  470  cd 
+  471  cd desktop
+  472   cd fintech-workspace
+  473  cd module_2
+  474  cd challenge
+  475  ls
+  476  cd starter_code
+  477  cd
+  478  ls
+  479  /desktop/fintech-workspace/module_2/challenge/starter_code
+  480  cd /desktop/fintech-workspace/module_2/challenge/starter_code
+  481  cd desktop/fintech-workspace/module_2/challenge/starter_code
+  482  ls
+  483  cd loan_qualifier_app
+  484  ls
+  485  conda activate dev
+  486  python app.py
+  487   cd /challenge_2
+  488  cd
+  489  cd /challenge_2
+  490  cd challenge_2
+  491  ls
+  492  cd starter_code
+  493  ls
+  494  cd loan_qualifier_app
+  495  ls
+  496  history 50 > terminal_history.txt
