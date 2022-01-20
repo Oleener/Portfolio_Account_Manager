@@ -8,6 +8,8 @@ import os
 import sys
 import dotenv
 
+from utils.formatters import *
+
 # Defining a PostgreSQL connection string
 db_connection_string = "postgresql+psycopg2://airgsfjw:lf0yqypx53HpPomnz_l3LXJZXMMufFay@kashin.db.elephantsql.com/airgsfjw"
 
@@ -16,46 +18,6 @@ engine = sql.create_engine(db_connection_string)
 
 def inspect_db(engine):
   return inspect(engine).get_table_names() 
-
-def format_performance_percentage(number):
-  if float(number) > 0:
-    formatted_number = f"+{number:.2f}%"
-  elif float(number) == 0:
-    formatted_number = f"{number:.2f}%"
-  else:
-    formatted_number = f"{number:.2f}%"
-  return formatted_number
-
-def format_performance_currency(number):
-  if float(number) > 0:
-    formatted_number = f"+${number:.2f}"
-  elif float(number) == 0:
-    formatted_number = f"${number:.2f}"
-  else:
-    formatted_number = f"${number:.2f}"
-  return formatted_number
-
-def generate_detailed_portfolio_string(portfolios):
-  for index, portfolio in portfolios.iterrows():
-    list_index = index + 1
-    portfolio_performance_percentage = format_performance_percentage(portfolio['portfolio_performance_percentage'])
-    porfolio_performance_currency = format_performance_currency(portfolio['portfolio_performance_currency'])
-    portfolios.loc[index,'choice_mode_name'] = f"{list_index}. {portfolio['portfolio_name']} - ${portfolio['portfolio_balance']:.2f}, {portfolio_performance_percentage}({porfolio_performance_currency})"
-    print(portfolios.loc[index,'choice_mode_name'])
-  return portfolios
-
-
-  # {'asset_id': [1], 'asset_code': ['XRP'], 'asset_name': ['Ripple XRP'], 'asset_holdings': [10000], 'asset_avg_buy_price': [0.8], 'asset_balance': [8351.45], 'asset_performance_percentage': [7.25], 'asset_performance_currency': [500.25]}
-def generate_detailed_asset_string(portfolio_assets):
-  for index, asset in portfolio_assets.iterrows():
-    list_index = index + 1
-    asset_performance_percentage = format_performance_percentage(asset['asset_performance_percentage'])
-    asset_performance_currency = format_performance_currency(asset['asset_performance_currency'])
-    portfolio_assets.loc[index,'choice_mode_name'] = f"{list_index}. {asset['asset_name']} ({asset['asset_code']}): {asset['asset_holdings']} {asset['asset_code']} - ${asset['asset_balance']:.2f}, {asset_performance_percentage}({asset_performance_currency})"
-    print(portfolio_assets.loc[index,'choice_mode_name'])
-  return portfolio_assets
-  
-  
 
 def run():
   os.system("clear")
@@ -142,8 +104,10 @@ def run():
       print("No portfolios added")
       print("----------------------------") 
     else:
-      portfolios = generate_detailed_portfolio_string(portfolios)
+      portfolios['choice_mode_name'] = [generate_detailed_portfolio_string(row[0], row[1], row[2], row[3]) for row in zip(portfolios['portfolio_name'], portfolios['portfolio_balance'], portfolios['portfolio_performance_percentage'], portfolios['portfolio_performance_currency'])]
       global_mode_choices.append('Manage Portfolio')
+      for portfolio in portfolios['choice_mode_name']:
+        print(portfolio)
       print("----------------------------")
       
     if is_email_verified == True:
@@ -168,7 +132,7 @@ def run():
       is_email_verified = True
     
     elif global_mode_choice == "Manage Portfolio":
-      selected_portfolio =  portfolios[portfolios['choice_mode_name'] == questionary.select("Select a profile", portfolios['choice_mode_name'].to_list()).ask()]
+      selected_portfolio =  portfolios[portfolios['choice_mode_name'] == questionary.select("Select a profile", portfolios['choice_mode_name'].to_list()).ask()].squeeze()  
       porfolio_management_mode = True
       new_portfolio = False
     
@@ -201,7 +165,11 @@ def run():
         print("No assets in the portfolio")
         print("----------------------------") 
       else:
-        assets = generate_detailed_asset_string(portfolio_assets) 
+        #assets = generate_detailed_asset_string(portfolio_assets) 
+        portfolio_assets['choice_mode_name'] = [generate_detailed_asset_string(row[0],row[1],row[2],row[3],row[4],row[5]) for row in zip(portfolio_assets['asset_name'], portfolio_assets['asset_code'], portfolio_assets['asset_holdings'], portfolio_assets['asset_balance'], portfolio_assets['asset_performance_percentage'], portfolio_assets['asset_performance_currency'])]
+        for asset in portfolio_assets['choice_mode_name']:
+          print(asset)                    
+                                      
         portfolio_management_choices.append('Add Existing Asset') 
         print("----------------------------")
       
