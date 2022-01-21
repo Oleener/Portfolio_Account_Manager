@@ -122,13 +122,19 @@ def run():
       print('Adding New portfolio')
       print("----------------------------")
       ### new_portfolio = add_portfolio(user_session['user_id'])   #   Function that adds a portfolio (asks the name of the portfolio) and returns the portfolio Series. It gets user_id from the current user session (user_session)
+      
+      # Enter Portfolio Name
+      # Pick portfolio type (table - portfolio_types)
+      # Create records in the DB:portfolios, specify the right portfolio_type_id 
+      # INSERT INTO portfolios ('portfolio_name', 'portfolio_type_id',....)
+      
       portfolio = pd.Series({'portfolio_id': 3, 'portfolio_name':'My New Portfolio', 'portfolio_type':'Crypto'})
       porfolio_management_mode = True
       new_portfolio = True
     
     elif global_mode_choice == "Verify Email":
       print('Verfying email')
-      ### is_email_verified = verify_email(user_session.iloc[0]['email'])  # Function that gets email and verifies it
+      ### is_email_verified = verify_email(user_session)  # Function that gets email and verifies it
       is_email_verified = True
     
     elif global_mode_choice == "Manage Portfolio":
@@ -192,6 +198,10 @@ def run():
         # If sell - check we have the amount to sell for the date specified. For example: 01/01/2022 - buy 1000, 01/03/2022 - buy 1000, 1. trying to sell 3000 on 01/04/2022 - error. 2. Trying to sell 1500 on 01/02/2022 - error (on 01/02/2022 we had only 1000). We can calculate cumulative sums (with plus for buy and minus for sell) for the dates before specified sell-date
         # If transcation passed the validation create the record in asset_transactions and update the corresponding record in asets_in_portfolio (calculate new asset_holding, new avg_buy_price)
 
+      if portfolio_management_choice == 'Show Detailed Portfolio Analysis':
+        os.system("clear")
+        print("Running Portfolio Analysis")
+        ### run_portfolio_analysis(portfolio) 
         
       
       if portfolio_management_choice == 'Edit Portfolio':
@@ -210,7 +220,7 @@ def run():
         # Show the message that user is removing the portfolio
         # Asking to confirm to remove the portfolio 
         # Update the record in the DB for the right portfolio (passing it as an argument) - set is_remoed = True (we won't remove portfolios phisically)
-        
+        porfolio_management_mode = False
       
       if portfolio_management_choice == 'Add New Asset':
         os.system("clear")
