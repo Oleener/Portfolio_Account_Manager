@@ -9,6 +9,7 @@ import sys
 import dotenv
 
 from utils.formatters import *
+from utils.authentication import *
 
 # Defining a PostgreSQL connection string
 db_connection_string = "postgresql+psycopg2://airgsfjw:lf0yqypx53HpPomnz_l3LXJZXMMufFay@kashin.db.elephantsql.com/airgsfjw"
@@ -33,13 +34,15 @@ def run():
   global_mode = False
     
   login_mode_choice = questionary.select("", choices = ["Log in", "Sign up", "Exit"], use_shortcuts=True).ask()
-
+  
   # Can't get to Global Mode without being logged in
   global_mode = False
   auth_result = False
   if login_mode_choice == 'Sign up':
-    print("Signing up and logging in") 
-    ### auth_result = user_signup()  # Creates account and run user_login() function after. Returns True and Series with user info (see user_info as a test example) when user is logged in successfully, or False otherwise
+    os.system("clear")
+    sign_up_result = user_signup(engine)  # Creates account and run user_login() function after. Returns True and Series with user info (see user_info as a test example) when user is logged in successfully, or False otherwise
+    if not sign_up_result:
+      sys.exit()
     #auth_result = False
     user_info = pd.Series({'user_id':1, 'user_first_name':'Kirill', 'user_last_name':'Panov', 'user_email':'us.kirpa1986@gmail.com', 'is_email_verified':False})
     auth_result = (True, user_info) 
@@ -60,7 +63,7 @@ def run():
       user_session = auth_result[1]
       global_mode = True
       os.system("clear")
-      print(f"Hey {user_session['user_first_name']}! Nice to see you here.", end = '\n\n')
+      print(f"Hey {user_session['user_first_name']}! You are successfully logged in.", end = '\n\n')
   elif login_mode_choice == 'Exit':
     print("Buy-buy! ")
     sys.exit()
