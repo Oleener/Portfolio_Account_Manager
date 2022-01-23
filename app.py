@@ -9,6 +9,7 @@ import sys
 import dotenv
 
 from utils.formatters import *
+from utils.authentication import *
 
 # Defining a PostgreSQL connection string
 db_connection_string = "postgresql+psycopg2://airgsfjw:lf0yqypx53HpPomnz_l3LXJZXMMufFay@kashin.db.elephantsql.com/airgsfjw"
@@ -19,55 +20,53 @@ engine = sql.create_engine(db_connection_string)
 def inspect_db(engine):
   return inspect(engine).get_table_names() 
 
+# Initialize the app
 def run():
+  # First step is authentication
   os.system("clear")
-  # Initialize the app
-  # First step - authentication
-
-    
   print("Welcome to Portfolio Manager!!!")
   print("_______________________________", end = '\n\n')
   print("Please log in to your account or sign up if you don't have one.", end='\n\n')
-    
-  # Can't get to Global Mode without being logged in
-  global_mode = False
-    
+  
+  # Providing the user with options to pick from - "Log in", "Sign up", "Exit"    
   login_mode_choice = questionary.select("", choices = ["Log in", "Sign up", "Exit"], use_shortcuts=True).ask()
-
+  
   # Can't get to Global Mode without being logged in
   global_mode = False
-  auth_result = False
+  # If User selects to Sign Up
   if login_mode_choice == 'Sign up':
-    print("Signing up and logging in") 
-    ### auth_result = user_signup()  # Creates account and run user_login() function after. Returns True and Series with user info (see user_info as a test example) when user is logged in successfully, or False otherwise
-    #auth_result = False
-    user_info = pd.Series({'user_id':1, 'user_first_name':'Kirill', 'user_last_name':'Panov', 'user_email':'us.kirpa1986@gmail.com', 'is_email_verified':False})
-    auth_result = (True, user_info) 
-    if isinstance(auth_result, bool):
+    os.system("clear")
+    # Running a sign up flow
+    sign_up_result = user_signup(engine) 
+    if not sign_up_result:
+      sys.exit()
+    else:
+      #user_info = pd.Series({'user_id':1, 'user_first_name':'Kirill', 'user_last_name':'Panov', 'user_email':'us.kirpa1986@gmail.com', 'is_email_verified':False})
+      if isinstance(sign_up_result, bool):
+        sys.exit() 
+      else:
+        user_session = sign_up_result[1]
+        global_mode = True
+        os.system("clear")
+        print(f"Hey {user_session['user_first_name']}! Your account has been successfully created.", end = '\n\n')
+  elif login_mode_choice == 'Log in':
+    os.system("clear")
+    # Returns True and Series with user info (see user_info as a test example) when user is logged in successfully, or False otherwise
+    login_result = user_login(engine)    
+    if isinstance(login_result, bool):
       sys.exit() 
     else:
-      user_session = auth_result[1]
+      user_session = login_result[1]
       global_mode = True
       os.system("clear")
       print(f"Hey {user_session['user_first_name']}! You are successfully logged in.", end = '\n\n')
-  elif login_mode_choice == 'Log in':
-    print("Logging in")  
-    ### auth_result = user_login()   # Returns True and Series with user info (see user_info as a test example) when user is logged in successfully, or False otherwise
-    auth_result = False 
-    if isinstance(auth_result, bool):
-      sys.exit() 
-    else:
-      user_session = auth_result[1]
-      global_mode = True
-      os.system("clear")
-      print(f"Hey {user_session['user_first_name']}! Nice to see you here.", end = '\n\n')
   elif login_mode_choice == 'Exit':
     print("Buy-buy! ")
     sys.exit()
   
   # Check if user's email is verified
   if user_session['is_email_verified'] == False: 
-    print("Your email is not verified!", end = '\n\n')
+    print(f"Your email {user_session['user_email']} is not verified!", end = '\n\n')
     print("The following functionality won't be available for you:", end='\n\n')
     print("- Deep Portfolio Analysis", end = '\n\n')
     print("You can verify your email now or do it later and proceed to use the app", end = '\n\n')
@@ -122,13 +121,19 @@ def run():
       print('Adding New portfolio')
       print("----------------------------")
       ### new_portfolio = add_portfolio(user_session['user_id'])   #   Function that adds a portfolio (asks the name of the portfolio) and returns the portfolio Series. It gets user_id from the current user session (user_session)
+      
+      # Enter Portfolio Name
+      # Pick portfolio type (table - portfolio_types)
+      # Create records in the DB:portfolios, specify the right portfolio_type_id 
+      # INSERT INTO portfolios ('portfolio_name', 'portfolio_type_id',....)
+      
       portfolio = pd.Series({'portfolio_id': 3, 'portfolio_name':'My New Portfolio', 'portfolio_type':'Crypto'})
       porfolio_management_mode = True
       new_portfolio = True
     
     elif global_mode_choice == "Verify Email":
       print('Verfying email')
-      ### is_email_verified = verify_email(user_session.iloc[0]['email'])  # Function that gets email and verifies it
+      ### is_email_verified = verify_email(user_session)  # Function that gets email and verifies it
       is_email_verified = True
     
     elif global_mode_choice == "Manage Portfolio":
@@ -192,6 +197,10 @@ def run():
         # If sell - check we have the amount to sell for the date specified. For example: 01/01/2022 - buy 1000, 01/03/2022 - buy 1000, 1. trying to sell 3000 on 01/04/2022 - error. 2. Trying to sell 1500 on 01/02/2022 - error (on 01/02/2022 we had only 1000). We can calculate cumulative sums (with plus for buy and minus for sell) for the dates before specified sell-date
         # If transcation passed the validation create the record in asset_transactions and update the corresponding record in asets_in_portfolio (calculate new asset_holding, new avg_buy_price)
 
+      if portfolio_management_choice == 'Show Detailed Portfolio Analysis':
+        os.system("clear")
+        print("Running Portfolio Analysis")
+        ### run_portfolio_analysis(portfolio) 
         
       
       if portfolio_management_choice == 'Edit Portfolio':
@@ -210,7 +219,7 @@ def run():
         # Show the message that user is removing the portfolio
         # Asking to confirm to remove the portfolio 
         # Update the record in the DB for the right portfolio (passing it as an argument) - set is_remoed = True (we won't remove portfolios phisically)
-        
+        porfolio_management_mode = False
       
       if portfolio_management_choice == 'Add New Asset':
         os.system("clear")
