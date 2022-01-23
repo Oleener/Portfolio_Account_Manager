@@ -20,47 +20,43 @@ engine = sql.create_engine(db_connection_string)
 def inspect_db(engine):
   return inspect(engine).get_table_names() 
 
+# Initialize the app
 def run():
+  # First step is authentication
   os.system("clear")
-  # Initialize the app
-  # First step - authentication
-
-    
   print("Welcome to Portfolio Manager!!!")
   print("_______________________________", end = '\n\n')
   print("Please log in to your account or sign up if you don't have one.", end='\n\n')
-    
-  # Can't get to Global Mode without being logged in
-  global_mode = False
-    
+  
+  # Providing the user with options to pick from - "Log in", "Sign up", "Exit"    
   login_mode_choice = questionary.select("", choices = ["Log in", "Sign up", "Exit"], use_shortcuts=True).ask()
   
   # Can't get to Global Mode without being logged in
   global_mode = False
-  auth_result = False
+  # If User selects to Sign Up
   if login_mode_choice == 'Sign up':
     os.system("clear")
-    sign_up_result = user_signup(engine)  # Creates account and run user_login() function after. Returns True and Series with user info (see user_info as a test example) when user is logged in successfully, or False otherwise
+    # Running a sign up flow
+    sign_up_result = user_signup(engine) 
     if not sign_up_result:
       sys.exit()
-    #auth_result = False
-    user_info = pd.Series({'user_id':1, 'user_first_name':'Kirill', 'user_last_name':'Panov', 'user_email':'us.kirpa1986@gmail.com', 'is_email_verified':False})
-    auth_result = (True, user_info) 
-    if isinstance(auth_result, bool):
-      sys.exit() 
     else:
-      user_session = auth_result[1]
-      global_mode = True
-      os.system("clear")
-      print(f"Hey {user_session['user_first_name']}! You are successfully logged in.", end = '\n\n')
+      #user_info = pd.Series({'user_id':1, 'user_first_name':'Kirill', 'user_last_name':'Panov', 'user_email':'us.kirpa1986@gmail.com', 'is_email_verified':False})
+      if isinstance(sign_up_result, bool):
+        sys.exit() 
+      else:
+        user_session = sign_up_result[1]
+        global_mode = True
+        os.system("clear")
+        print(f"Hey {user_session['user_first_name']}! Your account has been successfully created.", end = '\n\n')
   elif login_mode_choice == 'Log in':
-    print("Logging in")  
-    ### auth_result = user_login()   # Returns True and Series with user info (see user_info as a test example) when user is logged in successfully, or False otherwise
-    auth_result = False 
-    if isinstance(auth_result, bool):
+    os.system("clear")
+    # Returns True and Series with user info (see user_info as a test example) when user is logged in successfully, or False otherwise
+    login_result = user_login(engine)    
+    if isinstance(login_result, bool):
       sys.exit() 
     else:
-      user_session = auth_result[1]
+      user_session = login_result[1]
       global_mode = True
       os.system("clear")
       print(f"Hey {user_session['user_first_name']}! You are successfully logged in.", end = '\n\n')
@@ -70,7 +66,7 @@ def run():
   
   # Check if user's email is verified
   if user_session['is_email_verified'] == False: 
-    print("Your email is not verified!", end = '\n\n')
+    print(f"Your email {user_session['user_email']} is not verified!", end = '\n\n')
     print("The following functionality won't be available for you:", end='\n\n')
     print("- Deep Portfolio Analysis", end = '\n\n')
     print("You can verify your email now or do it later and proceed to use the app", end = '\n\n')
