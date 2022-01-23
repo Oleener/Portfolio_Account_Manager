@@ -10,6 +10,7 @@ import dotenv
 
 from utils.formatters import *
 from utils.authentication import *
+from financial.portfolio import *
 
 # Defining a PostgreSQL connection string
 db_connection_string = "postgresql+psycopg2://airgsfjw:lf0yqypx53HpPomnz_l3LXJZXMMufFay@kashin.db.elephantsql.com/airgsfjw"
@@ -30,12 +31,9 @@ def run():
   
   # Providing the user with options to pick from - "Log in", "Sign up", "Exit"    
   login_mode_choice = questionary.select("", choices = ["Log in", "Sign up", "Exit"], use_shortcuts=True).ask()
-  
-  # Can't get to Global Mode without being logged in
-  global_mode = False
+   
   # If User selects to Sign Up
   if login_mode_choice == 'Sign up':
-    os.system("clear")
     # Running a sign up flow
     sign_up_result = user_signup(engine) 
     if not sign_up_result:
@@ -45,18 +43,17 @@ def run():
       if isinstance(sign_up_result, bool):
         sys.exit() 
       else:
-        user_session = sign_up_result[1]
+        user_session = sign_up_result
         global_mode = True
         os.system("clear")
         print(f"Hey {user_session['user_first_name']}! Your account has been successfully created.", end = '\n\n')
   elif login_mode_choice == 'Log in':
-    os.system("clear")
     # Returns True and Series with user info (see user_info as a test example) when user is logged in successfully, or False otherwise
     login_result = user_login(engine)    
     if isinstance(login_result, bool):
       sys.exit() 
     else:
-      user_session = login_result[1]
+      user_session = login_result
       global_mode = True
       os.system("clear")
       print(f"Hey {user_session['user_first_name']}! You are successfully logged in.", end = '\n\n')
@@ -84,10 +81,8 @@ def run():
   # Entering Global Mode
   while global_mode:
     os.system("clear") 
-    print("Global Management Mode", end='\n\n')
-          
-    # We are in Global mode until user creates the first portfolio
-    porfolio_management_mode = False        
+    print("Global Management Mode", end='\n\n')         
+        
     ### portfolios = get_portfolios(user_session['user_id'])  # Function that returns a DF with portfolios (with the current balance and performance(percantage)) or empty DF if there are nothing in the portfolio. It gets user_id from the current user session (user_session)
     
     # Test Data: 
@@ -117,19 +112,21 @@ def run():
     global_mode_choice = questionary.select("", choices = global_mode_choices).ask()
     
     if global_mode_choice == "Add New Portfolio":
-      print("----------------------------")
-      print('Adding New portfolio')
-      print("----------------------------")
-      ### new_portfolio = add_portfolio(user_session['user_id'])   #   Function that adds a portfolio (asks the name of the portfolio) and returns the portfolio Series. It gets user_id from the current user session (user_session)
+      portfolio = add_portfolio(user_session, engine)   #   Function that adds a portfolio (asks the name of the portfolio) and returns the portfolio Series. It gets user_id from the current user session (user_session)
       
       # Enter Portfolio Name
       # Pick portfolio type (table - portfolio_types)
       # Create records in the DB:portfolios, specify the right portfolio_type_id 
       # INSERT INTO portfolios ('portfolio_name', 'portfolio_type_id',....)
       
-      portfolio = pd.Series({'portfolio_id': 3, 'portfolio_name':'My New Portfolio', 'portfolio_type':'Crypto'})
-      porfolio_management_mode = True
-      new_portfolio = True
+      if not isinstance(portfolio, bool):
+        is_new_portfolio = True
+        porfolio_management_mode = True
+      #portfolio = pd.Series({'portfolio_id': 3, 'portfolio_name':'My New Portfolio', 'portfolio_type':'Crypto'})
+      #porfolio_management_mode = True
+      else: 
+        porfolio_management_mode = False
+        
     
     elif global_mode_choice == "Verify Email":
       print('Verfying email')
@@ -139,7 +136,7 @@ def run():
     elif global_mode_choice == "Manage Portfolio":
       selected_portfolio =  portfolios[portfolios['choice_mode_name'] == questionary.select("Select a profile", portfolios['choice_mode_name'].to_list()).ask()].squeeze()  
       porfolio_management_mode = True
-      new_portfolio = False
+      is_new_portfolio = False
     
     if global_mode_choice == 'Exit':
       sys.exit()
@@ -149,7 +146,7 @@ def run():
       os.system("clear")
       print("Portfolio Management Mode")
       print("-------------------------")
-      if new_portfolio:
+      if is_new_portfolio:
         portfolio_assets = pd.DataFrame()
       else:
         ### full_portfolio = get_portfolio_info(selected_portfolio['portfolio'])   # Returns the tuple - (portfolio, assets). portfolio - Series (portfolio_id, portfolio_name, portfolio_balance, portfolio_performance)

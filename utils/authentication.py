@@ -25,11 +25,13 @@ def validate_email(email):
         return False
 
 def user_login(engine):
+  os.system("clear")
   print("Logging in:")
-  print("---------------------")
+  
   
   is_email_registered = False
   while not is_email_registered:
+    print("---------------------")
     user_email = questionary.text("Enter Your Email:").ask() 
     user_df = pd.read_sql_query(f"SELECT * FROM users JOIN user_profiles ON user_profiles.user_profile_id = users.user_profile_id WHERE email = '{user_email}'", con=engine).squeeze() 
     if user_df.empty:
@@ -42,21 +44,23 @@ def user_login(engine):
       os.system("clear")
       print("Logging in:")
       print("---------------------")
-      print(f"Email: {user_email}\n")
+      print(f"Email: {user_email}")
   attemtps_to_enter_password = 3
   while attemtps_to_enter_password > 0: 
+    print("---------------------")
     user_password = questionary.password("Enter Your Password:").ask()
     if hashlib.md5(user_password.encode()).hexdigest() != user_df['password']:
       print("\n  Wrong password\n")
       attemtps_to_enter_password -= 1
     else:
-      return (True, pd.Series({'user_id': user_df['user_id'], 'user_first_name': user_df['first_name'], 'user_last_name': user_df['last_name'], 'user_email': user_df['email'], 'is_email_verified': user_df['is_verified']}))
+      return pd.Series({'user_id': user_df['user_id'], 'user_first_name': user_df['first_name'], 'user_last_name': user_df['last_name'], 'user_email': user_df['email'], 'is_email_verified': user_df['is_verified']})
   if attemtps_to_enter_password == 0:
     print("  You've reached the maximum number of attempts to enter the password. Please try again later (password restoring - TBD).\n")
     return False  
     
 
 def user_signup(engine):
+  os.system("clear")
   print("Creating New Account:")
   print("---------------------")
   print("First Name:")
@@ -81,7 +85,7 @@ def user_signup(engine):
       print(f"First Name: {user_first_name}")
       print("Last Name:")
       print("Email:")
-      print("Password:\n")
+      print("Password:")
   # Entering Last Name
   is_last_name_empty = True
   while is_last_name_empty:
@@ -100,7 +104,7 @@ def user_signup(engine):
       print(f"First Name: {user_first_name}")
       print(f"Last Name: {user_last_name}")
       print("Email:")
-      print("Password:\n")
+      print("Password:")
   # Entering Email
   is_email_validated = False
   while not is_email_validated:
@@ -120,7 +124,7 @@ def user_signup(engine):
       print(f"First Name: {user_first_name}")
       print(f"Last Name: {user_last_name}")
       print(f"Email: {user_email}")
-      print("Password:\n")
+      print("Password:")
   is_password_validated = False
   while not is_password_validated:
     print("---------------------")
@@ -159,7 +163,7 @@ def user_signup(engine):
       created_on = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
       insert_user_query = f"INSERT INTO users (email, password, created_on, user_profile_id) VALUES ('{user_email}', '{password_hash}', '{created_on}', {user_profile_id}) RETURNING user_id"
       [user_id] = engine.execute(insert_user_query).fetchone()
-      return (True, pd.Series({'user_id': user_id, 'user_first_name': user_first_name, 'user_last_name': user_last_name, 'user_email': user_email, 'is_email_verified': False}))
+      return pd.Series({'user_id': user_id, 'user_first_name': user_first_name, 'user_last_name': user_last_name, 'user_email': user_email, 'is_email_verified': False})
     except Exception:
       print("The following exception occurred during the registration process:")
       print(Exception.with_traceback())
