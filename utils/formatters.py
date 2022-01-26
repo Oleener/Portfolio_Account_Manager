@@ -23,7 +23,7 @@ def generate_detailed_portfolio_string(portfolio_name, portfolio_balance, portfo
 
   # {'asset_id': [1], 'asset_code': ['XRP'], 'asset_name': ['Ripple XRP'], 'asset_holdings': [10000], 'asset_avg_buy_price': [0.8], 'asset_balance': [8351.45], 'asset_performance_percentage': [7.25], 'asset_performance_currency': [500.25]}
   
-def generate_detailed_asset_string(asset_name, asset_code, asset_holdings, asset_balance, asset_performance_percentage, asset_performance_currency): 
-  asset_performance_percentage = format_performance_percentage(asset_performance_percentage)
-  asset_performance_currency = format_performance_currency(asset_performance_currency)
-  return f"{asset_name} ({asset_code}): {asset_holdings} {asset_code} - ${asset_balance:.2f}, {asset_performance_percentage}({asset_performance_currency})"
+def generate_detailed_asset_string(asset_code, asset_holdings, asset_avg_buy_price, asset_total_profit_loss_currency, asset_total_profit_loss_percentage, asset_balance, current_price): 
+  asset_performance_percentage = format_performance_percentage(asset_total_profit_loss_percentage)
+  asset_performance_currency = format_performance_currency(asset_total_profit_loss_currency)
+  return f"{asset_code} - {asset_holdings} {asset_code}; Price: ${current_price:.4f}; Balance: ${asset_balance:.2f}; Avg Buy Price: {asset_avg_buy_price:.2f}; Total Profit/Loss: {asset_performance_percentage}({asset_performance_currency})"
