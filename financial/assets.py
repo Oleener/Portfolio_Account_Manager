@@ -30,7 +30,7 @@ def get_asset_price(asset_type, asset_code):
   if asset_type == 'Crypto':
     url = f"https://www.alphavantage.co/query?function=CRYPTO_INTRADAY&symbol={asset_code}&market=USD&interval=1min&apikey={av_api_key}"
     response = requests.get(url).json()
-    df = df = pd.DataFrame(response['Time Series Crypto (1min)']).T
+    df = pd.DataFrame(response['Time Series Crypto (1min)']).T
     price = df.iloc[0]['4. close']
     return float(price)
   if asset_type == "Stocks":
@@ -320,3 +320,5 @@ def add_transaction_existing_asset(portfolio, asset, engine):
       return False
   else:
     return False  
+
+  
