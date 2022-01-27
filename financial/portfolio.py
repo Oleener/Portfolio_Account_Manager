@@ -88,8 +88,6 @@ def get_portfolios(user_session, engine):
 
 
 def get_portfolio_info(portfolio, engine):
-  # Присобачить к портфолио доп инфо - текущий баланс, профит/лосс, профит/лосс %
-  # Взять все ассеты и по ним получить доп инфу - текущая стоимость = холдингс * текущий прайс, профит/лосс, профит/лосс %
   assets_df = pd.read_sql_query(f"SELECT assets_in_portfolio.asset_in_portfolio_id, assets_in_portfolio.asset_code, assets_in_portfolio.asset_holdings, assets_in_portfolio.asset_avg_buy_price, assets_in_portfolio.asset_fixed_profit_loss_currency, assets_in_portfolio.asset_fixed_profit_loss_percentage, assets_in_portfolio.sum_of_investments, assets_in_portfolio.buy_total_amount, assets_in_portfolio.sold_total_amount, assets_in_portfolio.sold_total_currency,portfolio_types.portfolio_type FROM portfolios JOIN assets_in_portfolio ON assets_in_portfolio.portfolio_id = portfolios.portfolio_id JOIN portfolio_types ON portfolios.portfolio_type_id = portfolio_types.portfolio_type_id WHERE portfolios.portfolio_id = {portfolio['portfolio_id']}", con=engine)
   assets_df['current_price'] = [get_asset_price(row[0], row[1]) for row in zip(assets_df['portfolio_type'], assets_df['asset_code'])]
   assets_df['asset_balance'] = [float(row[0]) * float(row[1]) for row in zip(assets_df['asset_holdings'], assets_df['current_price'])]
