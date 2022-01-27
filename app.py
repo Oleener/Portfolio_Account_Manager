@@ -97,8 +97,11 @@ def run():
     else:
       #portfolios['choice_mode_name'] = [generate_detailed_portfolio_string(row[0], row[1], row[2], row[3]) for row in zip(portfolios['portfolio_name'], portfolios['portfolio_balance'], portfolios['portfolio_performance_percentage'], portfolios['portfolio_performance_currency'])]
       #for portfolio in portfolios['choice_mode_name']:
-      for portfolio in portfolios['portfolio_name']:
-        print(portfolio)
+      for index, entry in portfolios.iterrows():
+        portf = get_portfolio_info(entry, engine)[0]
+        portf['detailed_info'] = generate_detailed_portfolio_string_short(portf['portfolio_name'], portf['current_balance'], portf['assets_count'])
+        print(portf['detailed_info'])
+        
       print("----------------------------")
       
     global_mode_choices = get_portfolio_mode_choices('Global',is_email_verified, portfolios.empty)
@@ -193,18 +196,18 @@ def run():
         
       
       if portfolio_management_choice == 'Edit Portfolio':
-        os.system("clear")
-        print("Editing the portfolio name")
-        ### edit_portfolio_name(portfolio, engine)  
+        
+        is_portfolio_changed = edit_portfolio_name(portfolio, engine)
         # Show the current name of the portfolio
         # Ask to enter new name 
         # Update the record in the DB for the right portfolio (passing it as an argument)
 
       
       if portfolio_management_choice == 'Remove Portfolio':
-        os.system("clear")
-        print("Removing the portfolio")
-        ### remove_portfolio(portfolio, engine)  
+        is_portfolio_removed = remove_portfolio(portfolio, engine)  
+        if is_portfolio_removed:
+          porfolio_management_mode = False
+          
         # Show the message that user is removing the portfolio
         # Asking to confirm to remove the portfolio 
         # Update the record in the DB for the right portfolio (passing it as an argument) - set is_remoed = True (we won't remove portfolios phisically)
