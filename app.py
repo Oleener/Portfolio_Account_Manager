@@ -7,11 +7,14 @@ import fire
 import os
 import sys
 import dotenv
+import dash
+
 
 from utils.formatters import *
 from utils.authentication import *
 from financial.portfolio import *
 from financial.assets import *
+from financial.web_app import *
 
 # Defining a PostgreSQL connection string
 db_connection_string = "postgresql+psycopg2://airgsfjw:lf0yqypx53HpPomnz_l3LXJZXMMufFay@kashin.db.elephantsql.com/airgsfjw"
@@ -190,13 +193,14 @@ def run():
         # If transcation passed the validation create the record in asset_transactions and update the corresponding record in asets_in_portfolio (calculate new asset_holding, new avg_buy_price)
 
       if portfolio_management_choice == 'Show Detailed Portfolio Analysis':
-        os.system("clear")
-        print("Running Portfolio Analysis")
-        ### run_portfolio_analysis(portfolio) 
+        
+        assets_history = get_assets_price_history(portfolio['portfolio_type'], portfolio_assets['asset_code'].to_list(), period_years=1)
+        app = build_layout(portfolio, assets_history)
+        app.run_server()
+        questionary.text("").ask()
         
       
       if portfolio_management_choice == 'Edit Portfolio':
-        
         is_portfolio_changed = edit_portfolio_name(portfolio, engine)
         # Show the current name of the portfolio
         # Ask to enter new name 
@@ -215,6 +219,7 @@ def run():
       
       if portfolio_management_choice == 'Add New Asset':
         asset_transaction = add_transaction(portfolio, engine)   
+        continue 
         # Interacts with user to get the aset code
         # Check if there are no assets with the same code in the portfolio. If so, call function to add transaction for the existing asset (see anove - add_transaction_existing_asset), if no:
         # Checks the type of asset based on the portfolio_type to use the right API 

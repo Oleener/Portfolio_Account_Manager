@@ -14,9 +14,12 @@ al_key_id = os.getenv("ALPACA_KEY_ID")
 al_sec_key = os.getenv("ALPACA_SECRET_KEY")
 
 def get_assets_last_prices(assets_type, assets_list):
-  prices = pd.Series(dtype=float64)
+  prices = []
+  #if assets_type == 'Stocks':
+  #  prices = get_stocks_price(assets_list)
+  #else:
   for asset in assets_list:
-    prices[asset] = get_asset_price(assets_type, asset)
+    prices.append(get_asset_price(assets_type, asset))
   return prices
 
 def is_asset_exist(asset_type, asset_code):
@@ -26,13 +29,21 @@ def is_asset_exist(asset_type, asset_code):
     except Exception:
       return False
 
+def get_stocks_price(asset_codes):
+  alpaca = tradeapi.REST(key_id=al_key_id, secret_key=al_sec_key, api_version='v2')
+  df = alpaca.get_barset(symbols = asset_codes, timeframe='5Min').df
+  print(df)
+
+ 
+
 def get_asset_price(asset_type, asset_code):
-  if asset_type == 'Crypto':
+  if asset_type == "Crypto":
     url = f"https://www.alphavantage.co/query?function=CRYPTO_INTRADAY&symbol={asset_code}&market=USD&interval=1min&apikey={av_api_key}"
     response = requests.get(url).json()
     df = pd.DataFrame(response['Time Series Crypto (1min)']).T
     price = df.iloc[0]['4. close']
     return float(price)
+  
   if asset_type == "Stocks":
     url = f"https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol={asset_code}&interval=1min&apikey={av_api_key}"
     response = requests.get(url).json()
@@ -46,7 +57,13 @@ def get_assets_price_history(assets_type, assets_code, period_years = None):
     for asset in assets_code:
       url = f'https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY&symbol={asset}&market=USD&apikey={av_api_key}'
       response = requests.get(url).json()
-      df = pd.DataFrame(response['Time Series (Digital Currency Daily)']).T
+      get_prices = False
+      while not get_prices:
+        try:
+          df = pd.DataFrame(response['Time Series (Digital Currency Daily)']).T
+          get_prices = True
+        except:
+          get_prices = False
       df = df['4a. close (USD)']
       df.index = pd.to_datetime(df.index)
       df.name = asset
@@ -320,5 +337,3 @@ def add_transaction_existing_asset(portfolio, asset, engine):
       return False
   else:
     return False  
-
-  
