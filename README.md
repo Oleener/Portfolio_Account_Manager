@@ -37,58 +37,33 @@ Before running the application first install the following dependencies.
 ```
 Install Anaconda Package
 ```
-ALPACA ``` pip install alpaca-trade-api ```
+ALPACA - ``` pip install alpaca-trade-api ```
 
-Dash ``` pip install dash ```
+Dash - ``` pip install dash ```
 
-DateTime
-```
-pip install DateTime
-```
-Dotenv
-```
-pip install python-dotenv
-```
-fire
-```
-pip install fire
-```
-json
-```
-conda install -c jmcmurray json
-```
-NumPy
-```
-pip install numpy 
-```
-Pandas
-```
-pip install pandas
-```
-Plotly
-```
-pip install plotly==5.5.0
-```
-questionary
-```
-pip install questionary
-```
-RE
-```
-pip install regex
-```
-Requests
-```
-conda install -c anaconda requests
-```
-SMTP
-```
-pip install smtplib
-```
-SQL
-```
-pip install SQLAlchemy
-```
+DateTime - ``` pip install DateTime ```
+
+Dotenv - ``` pip install python-dotenv ```
+
+fire - ``` pip install fire ```
+
+json - ``` conda install -c jmcmurray json ```
+
+NumPy - ``` pip install numpy  ```
+
+Pandas - ``` pip install pandas ```
+
+Plotly - ``` pip install plotly==5.5.0 ```
+
+questionary - ``` pip install questionary ```
+
+RE - ``` pip install regex ```
+
+Requests - ``` conda install -c anaconda requests ```
+
+SMTP - ``` pip install smtplib ```
+
+SQL - ``` pip install SQLAlchemy ```
 
 ---
 
