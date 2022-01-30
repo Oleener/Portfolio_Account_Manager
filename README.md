@@ -84,6 +84,7 @@ Once logged in, an email verification screen will be prompted lettting you know 
 ![2](https://github.com/Oleener/Portfolio_Account_Manager/blob/olena_dev/Instructions/2.png) 
 
 After proceeding with email verification, Global Management Mode will be activated which will display the users stock and crypto portfolio.
+
 ![3](https://github.com/Oleener/Portfolio_Account_Manager/blob/olena_dev/Instructions/3.png)
 
 Once in the global management mode, the user will have the ability to:
