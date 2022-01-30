@@ -111,7 +111,9 @@ The user is able to perform deep portfolio analysis on their portfolio ONLY if t
 
 ## Presentation
 
-![powerpoint]()
+The powerpoint below summerizes the main points of Portfolio Account Manager. 
+
+![powerpoint](https://github.com/Oleener/Portfolio_Account_Manager/blob/olena_dev/Instructions/Fintech%20-%20Project%201.pdf)
 
 ---
 
