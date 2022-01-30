@@ -18,15 +18,15 @@ The project leverages Pyhton 3.7 with the following packages:
 * [hashlib](https://www.askpython.com/python-modules/python-hashlib-module#:~:text=The%20Python%20hashlib%20module%20is,very%20difficult%20to%20decrypt%20it.) - An interface for hashing messages easily in an encrypted format.
 * [json](https://www.geeksforgeeks.org/python-json/#:~:text=JSON%20JavaScript%20Object%20Notation%20is,built%2Din%20package%20called%20json.) - Format for structuring data used for storing and transferring data between the browser and the server.
 * [NumPy](https://numpy.org/doc/stable/user/absolute_beginners.html#:~:text=NumPy%20can%20be%20used%20to,on%20these%20arrays%20and%20matrices.) - Used to perform a wide variety of mathematical operations on arrays.
-* [os](https://www.geeksforgeeks.org/os-module-python-examples/) - provides functions for creating/removing a directory, fetching its contents, changing and identifying the current directory.
-* [Pandas](https://github.com/pandas-dev/pandas#:~:text=data%20analysis%20toolkit-,What%20is%20it%3F,world%20data%20analysis%20in%20Python.) - for data manipulation and analysis 
+* [os](https://www.geeksforgeeks.org/os-module-python-examples/) - Provides functions for creating/removing a directory, fetching its contents, changing and identifying the current directory.
+* [Pandas](https://github.com/pandas-dev/pandas#:~:text=data%20analysis%20toolkit-,What%20is%20it%3F,world%20data%20analysis%20in%20Python.) - For data manipulation and analysis 
 * [plotly](https://github.com/plotly/plotly.py) - Makes interactive, publication-quality graphs
 * [questionary](https://github.com/tmbo/questionary) - For interactive user prompts and dialogs
 * [RE](https://docs.python.org/3/howto/regex.html) - Used to match strings of text such as particular characters, words, or patterns of characters
 * [requests](https://www.geeksforgeeks.org/http-request-methods-python-requests/) - Allow you to send/access HTTP/1.1 requests using Python
-* [SMTP](https://docs.python.org/3/library/smtplib.html#:~:text=The%20smtplib%20module%20defines%20an,1869%20(SMTP%20Service%20Extensions).) - defines an SMTP client session object that can be used to send mail to any internet machine with an SMTP or ESMTP listener daemon.
+* [SMTP](https://docs.python.org/3/library/smtplib.html#:~:text=The%20smtplib%20module%20defines%20an,1869%20(SMTP%20Service%20Extensions).) - Defines an SMTP client session object that can be used to send mail to any internet machine with an SMTP or ESMTP listener daemon.
 * [SQL](https://github.com/tiangolo/sqlmodel) - A programming language used for managing or querying data stored in a relational database management system.
-* [sys](https://docs.python.org/3/library/sys.html) - provides functions and variables that are used to manipulate different parts of the python runtime enviorment.
+* [sys](https://docs.python.org/3/library/sys.html) - Provides functions and variables that are used to manipulate different parts of the python runtime enviorment.
 
 ---
 
@@ -36,6 +36,48 @@ Before running the application first install the following dependencies.
 
 ```
 Install Anaconda Package
+```
+```
+pip install alpaca-trade-api
+```
+```
+pip install dash
+```
+```
+pip install DateTime
+```
+```
+pip install python-dotenv
+```
+```
+pip install fire
+```
+```
+conda install -c jmcmurray json
+```
+```
+pip install numpy 
+```
+```
+pip install pandas
+```
+```
+pip install plotly==5.5.0
+```
+```
+pip install questionary
+```
+```
+pip install regex
+```
+```
+conda install -c anaconda requests
+```
+```
+pip install smtplib
+```
+```
+pip install SQLAlchemy
 ```
 
 ---
