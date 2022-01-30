@@ -13,7 +13,7 @@ The project leverages Pyhton 3.7 with the following packages:
 * [dash html](https://github.com/plotly/dash-html-components) - Dash provides HTML classes which enables the suer to generate HTML content with python. 
 * [datetime](https://www.geeksforgeeks.org/python-datetime-module/#:~:text=Python%20Datetime%20module%20supplies%20classes,and%20not%20string%20or%20timestamps.) - Supplies classes to work with date and time.
 * [dotenv](https://github.com/theskumar/python-dotenv#:~:text=Python%2Ddotenv%20reads%20key%2Dvalue,following%20the%2012%2Dfactor%20principles.) - A zero-dependency module that loads environment variables from a .env file into process.env. Storing configuration in the environment separate from code.
-* [EmailMessage](https://docs.python.org/3/library/email.message.html#:~:text=EmailMessage%20provides%20the%20core%20functionality,referred%20to%20as%20the%20content).) - Provides the core functionality for setting and querying header fields, for accessing message bodies, and for creating or modifying structured messages.
+* [EmailMessage](https://docs.python.org/3/library/email.message.html#:~:text=EmailMessage%20provides%20the%20core%20functionality,referred%20to%20as%20the%20content) - Provides the core functionality for setting and querying header fields, for accessing message bodies, and for creating or modifying structured messages.
 * [fire](https://github.com/google/python-fire) - For the command line interface, help page, and entrypoint.
 * [hashlib](https://www.askpython.com/python-modules/python-hashlib-module#:~:text=The%20Python%20hashlib%20module%20is,very%20difficult%20to%20decrypt%20it.) - An interface for hashing messages easily in an encrypted format.
 * [json](https://www.geeksforgeeks.org/python-json/#:~:text=JSON%20JavaScript%20Object%20Notation%20is,built%2Din%20package%20called%20json.) - Format for structuring data used for storing and transferring data between the browser and the server.
@@ -37,45 +37,56 @@ Before running the application first install the following dependencies.
 ```
 Install Anaconda Package
 ```
-```
-pip install alpaca-trade-api
-```
+ALPACA ``` pip install alpaca-trade-api ```
+Dash
 ```
 pip install dash
 ```
+DateTime
 ```
 pip install DateTime
 ```
+Dotenv
 ```
 pip install python-dotenv
 ```
+fire
 ```
 pip install fire
 ```
+json
 ```
 conda install -c jmcmurray json
 ```
+NumPy
 ```
 pip install numpy 
 ```
+Pandas
 ```
 pip install pandas
 ```
+Plotly
 ```
 pip install plotly==5.5.0
 ```
+questionary
 ```
 pip install questionary
 ```
+RE
 ```
 pip install regex
 ```
+Requests
 ```
 conda install -c anaconda requests
 ```
+SMTP
 ```
 pip install smtplib
 ```
+SQL
 ```
 pip install SQLAlchemy
 ```
