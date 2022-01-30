@@ -75,7 +75,7 @@ To use the Portfolio account manager application simply clone the repository and
 python app.py
 ```
 Upon launching the portfolio account manager application you will be greated with the following prompt.
- 
+
 ![1](https://github.com/Oleener/Portfolio_Account_Manager/blob/olena_dev/Instructions/1.png)
 
 To use the application you will need to create a user profile via the ```Sign Up``` option. 
@@ -109,6 +109,11 @@ The user is able to perform deep portfolio analysis on their portfolio ONLY if t
 
 ---
 
+## Presentation
+
+![powerpoint]()
+
+---
 
 ## Contributors
 
