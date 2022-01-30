@@ -38,10 +38,9 @@ Before running the application first install the following dependencies.
 Install Anaconda Package
 ```
 ALPACA ``` pip install alpaca-trade-api ```
-Dash
-```
-pip install dash
-```
+
+Dash ``` pip install dash ```
+
 DateTime
 ```
 pip install DateTime
