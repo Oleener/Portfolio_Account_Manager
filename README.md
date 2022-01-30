@@ -77,8 +77,11 @@ python app.py
 Upon launching the portfolio account manager application you will be greated with the following prompt. 
 ![1](https://github.com/Oleener/Portfolio_Account_Manager/blob/olena_dev/Instructions/1.png)
 
-To use the application you will need to create a user profile via the ```Sign Up``` option. If you already have a profile set up proceed using the ```Log In``` optionnnnn
+To use the application you will need to create a user profile via the ```Sign Up``` option. 
+If you already have a profile set up proceed using the ```Log In``` option.
 
+Once logged in, an email verification screen will be prompted lettting you know whether your account is verified or not. This screen will also give you the option to verify your account. 
+![2]() 
 
 
 ---
