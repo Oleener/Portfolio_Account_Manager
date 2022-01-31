@@ -26,6 +26,7 @@ The project leverages Pyhton 3.7 with the following packages:
 * [requests](https://www.geeksforgeeks.org/http-request-methods-python-requests/) - Allow you to send/access HTTP/1.1 requests using Python
 * [SMTP](https://docs.python.org/3/library/smtplib.html#:~:text=The%20smtplib%20module%20defines%20an,1869%20(SMTP%20Service%20Extensions).) - Defines an SMTP client session object that can be used to send mail to any internet machine with an SMTP or ESMTP listener daemon.
 * [SQL](https://github.com/tiangolo/sqlmodel) - A programming language used for managing or querying data stored in a relational database management system.
+* [sqlalchemy](https://www.sqlalchemy.org/) - library that facilitates the communication between Python programs and databases.
 * [sys](https://docs.python.org/3/library/sys.html) - Provides functions and variables that are used to manipulate different parts of the python runtime enviorment.
 
 ---
@@ -64,6 +65,8 @@ Requests - ``` conda install -c anaconda requests ```
 SMTP - ``` pip install smtplib ```
 
 SQL - ``` pip install SQLAlchemy ```
+
+sqlalchemy - ```pip install psycopg2```
 
 ---
 
