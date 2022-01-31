@@ -29,12 +29,12 @@ def is_asset_exist(asset_type, asset_code):
     except Exception:
       return False
 
+
 def get_stocks_price(asset_codes):
   alpaca = tradeapi.REST(key_id=al_key_id, secret_key=al_sec_key, api_version='v2')
   df = alpaca.get_barset(symbols = asset_codes, timeframe='5Min').df
   print(df)
 
- 
 
 def get_asset_price(asset_type, asset_code):
   if asset_type == "Crypto":
@@ -57,13 +57,7 @@ def get_assets_price_history(assets_type, assets_code, period_years = None):
     for asset in assets_code:
       url = f'https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY&symbol={asset}&market=USD&apikey={av_api_key}'
       response = requests.get(url).json()
-      get_prices = False
-      while not get_prices:
-        try:
-          df = pd.DataFrame(response['Time Series (Digital Currency Daily)']).T
-          get_prices = True
-        except:
-          get_prices = False
+      df = pd.DataFrame(response['Time Series (Digital Currency Daily)']).T
       df = df['4a. close (USD)']
       df.index = pd.to_datetime(df.index)
       df.name = asset
@@ -94,7 +88,6 @@ def add_transaction(portfolio, engine):
   print("---------------------")
   print("Asset Code:")
   
-
   asset_exist = False
   while not asset_exist:
     print("---------------------")
