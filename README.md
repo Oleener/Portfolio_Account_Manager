@@ -72,11 +72,19 @@ sqlalchemy - ```pip install psycopg2```
 
 ## Usage 
 
+Make sure all the following keys are added to .env file when using this application in the terminal. Please include your keys in between the "". 
+```
+ALPHA_VANTAGE_API_KEY: ""
+ALPACA_KEY_ID: ""
+ALPACA_SECRET_KEY: ""
+```
+
 To use the Portfolio account manager application simply clone the repository and run the **app.py** with:
 
 ```python
 python app.py
 ```
+
 Upon launching the portfolio account manager application you will be greated with the following prompt.
 
 ![1](https://github.com/Oleener/Portfolio_Account_Manager/blob/olena_dev/Instructions/1.png)
