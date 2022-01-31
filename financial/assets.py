@@ -1,4 +1,4 @@
-#import necassary libraries and dependencies 
+# import necassary libraries and dependencies 
 from numpy import float64
 import requests
 import alpaca_trade_api as tradeapi
@@ -8,14 +8,14 @@ import os
 import pandas as pd
 import questionary
 from datetime import datetime
-
-#retrieve all api and secret keys
+ 
+# retrieve all api and secret keys
 load_dotenv()
 av_api_key = os.getenv("ALPHA_VANTAGE_API_KEY")
 al_key_id = os.getenv("ALPACA_KEY_ID")
 al_sec_key = os.getenv("ALPACA_SECRET_KEY")
 
-#retreive asset's last price
+# retreive asset's last price
 def get_assets_last_prices(assets_type, assets_list):
   prices = []
   #if assets_type == 'Stocks':
@@ -94,7 +94,7 @@ def get_assets_price_history(assets_type, assets_code, period_years = None):
       assets_df[asset] = df[asset]['close']
     assets_df.index = assets_df.index.date
     return assets_df
-#Add more to an asset in a portfolio 
+# Add more to an asset in a portfolio 
 def add_transaction(portfolio, engine):
   os.system("clear")
   print(f"Adding new transaction for the Portfolio: {portfolio['portfolio_name']}")
@@ -120,7 +120,7 @@ def add_transaction(portfolio, engine):
       if not try_again:
         return False
       
-  #Checking if asset exists in the portfolio
+  # Checking if asset exists in the portfolio
   asset_in_portfolio_df = pd.read_sql_query(f"SELECT * FROM portfolios JOIN assets_in_portfolio ON portfolios.portfolio_id = assets_in_portfolio.portfolio_id WHERE portfolios.portfolio_id = {portfolio['portfolio_id']} AND assets_in_portfolio.asset_code = '{asset_code}'", con=engine).squeeze()
   if not asset_in_portfolio_df.empty:
     print("---------------------")
@@ -206,7 +206,7 @@ def add_transaction_new_asset(portfolio, asset_code, engine):
       try_again = questionary.confirm("Try to enter the price again?").ask()
       if not try_again:
         return False
-  #add the asset to the database 
+  # add the asset to the database 
   create_asset = questionary.confirm("Do you want to add this transaction?").ask()
   if create_asset:
     try:
@@ -222,12 +222,12 @@ def add_transaction_new_asset(portfolio, asset_code, engine):
   else:
     return False
 
-#turn database into a pandas DataFrame
+# turn database into a pandas DataFrame
 def get_assets(portfolio, engine):
   assets_df = pd.read_sql_query(f"SELECT * FROM assets_in_portfolio JOIN portfolios ON portfolios.portfolio_id = assets_in_portfolio.portfolio_id WHERE portfolios.portfolio_id = {portfolio['portfolio_id']}", con=engine)
   return assets_df
 
-#function to show adding an existing asset
+# function to show adding an existing asset
 def add_transaction_existing_asset(portfolio, asset, engine):
   os.system("clear")
   print(f"Adding new transaction for the Portfolio: {portfolio['portfolio_name']}")
