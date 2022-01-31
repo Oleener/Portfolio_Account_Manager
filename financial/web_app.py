@@ -15,7 +15,7 @@ def build_layout(portfolio: pd.Series, assets_in_porfolio: pd.DataFrame):
   fig1 = px.line(df_changes, title = "Daily Returns", labels = ['Date', 'Daily Return'])
   fig2 = px.line(df_cumprod, title = "Cumulative Product")
   # style the web application
-   app.layout = html.Div(children=[
+  app.layout = html.Div(children=[
     html.H2(children=f"Analisys for {portfolio['portfolio_name']} (Test Mode)"),
 
     
