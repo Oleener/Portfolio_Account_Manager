@@ -1,3 +1,4 @@
+#import necassary libraries and dependencies 
 from numpy import float64
 import requests
 import alpaca_trade_api as tradeapi
@@ -8,11 +9,13 @@ import pandas as pd
 import questionary
 from datetime import datetime
 
+#retrieve all api and secret keys
 load_dotenv()
 av_api_key = os.getenv("ALPHA_VANTAGE_API_KEY")
 al_key_id = os.getenv("ALPACA_KEY_ID")
 al_sec_key = os.getenv("ALPACA_SECRET_KEY")
 
+#retreive asset's last price
 def get_assets_last_prices(assets_type, assets_list):
   prices = []
   #if assets_type == 'Stocks':
@@ -22,6 +25,9 @@ def get_assets_last_prices(assets_type, assets_list):
     prices.append(get_asset_price(assets_type, asset))
   return prices
 
+# make sure the asset exists. 
+# If it does then return that the asset exists and it's price. 
+# If asset doesn't exist, returns false.
 def is_asset_exist(asset_type, asset_code):
     try:
       get_asset_price(asset_type, asset_code)
@@ -34,8 +40,7 @@ def get_stocks_price(asset_codes):
   df = alpaca.get_barset(symbols = asset_codes, timeframe='5Min').df
   print(df)
 
- 
-
+ # function used to retrieve either stock or crypto asset price from api 
 def get_asset_price(asset_type, asset_code):
   if asset_type == "Crypto":
     url = f"https://www.alphavantage.co/query?function=CRYPTO_INTRADAY&symbol={asset_code}&market=USD&interval=1min&apikey={av_api_key}"
@@ -50,8 +55,10 @@ def get_asset_price(asset_type, asset_code):
     df = pd.DataFrame(response['Time Series (1min)']).T
     price = df.iloc[0]['4. close']
     return float(price)
-
+  
+# function used to retrieve asset price history in a time period of years
 def get_assets_price_history(assets_type, assets_code, period_years = None):
+    # historical data for crypto currency 
   if assets_type == 'Crypto':
     assets_df = pd.DataFrame()
     for asset in assets_code:
@@ -74,6 +81,7 @@ def get_assets_price_history(assets_type, assets_code, period_years = None):
       assets_df[asset] = df
     df.index.name = 'Date'
     return assets_df
+    # historical data for stocks 
   if assets_type == 'Stocks':
     alpaca = tradeapi.REST(key_id=al_key_id, secret_key=al_sec_key, api_version='v2')
     df = alpaca.get_barset(symbols = assets_code, timeframe='1D', limit=1000).df
@@ -86,15 +94,15 @@ def get_assets_price_history(assets_type, assets_code, period_years = None):
       assets_df[asset] = df[asset]['close']
     assets_df.index = assets_df.index.date
     return assets_df
-
+#Add more to an asset in a portfolio 
 def add_transaction(portfolio, engine):
   os.system("clear")
   print(f"Adding new transaction for the Portfolio: {portfolio['portfolio_name']}")
   print(f"Type of the Asset: {portfolio['portfolio_type']}")
   print("---------------------")
   print("Asset Code:")
-  
-
+  # Add a new asset to the portfolio if it exists in the database 
+  # and if it doesn't return a a try again prompt
   asset_exist = False
   while not asset_exist:
     print("---------------------")
@@ -124,7 +132,7 @@ def add_transaction(portfolio, engine):
   else:
     return add_transaction_new_asset(portfolio, asset_code, engine)
     
-      
+# New asset bought
 def add_transaction_new_asset(portfolio, asset_code, engine):
   os.system("clear")
   print(f"Adding new transaction for the Portfolio: {portfolio['portfolio_name']}")
@@ -198,7 +206,7 @@ def add_transaction_new_asset(portfolio, asset_code, engine):
       try_again = questionary.confirm("Try to enter the price again?").ask()
       if not try_again:
         return False
-      
+  #add the asset to the database 
   create_asset = questionary.confirm("Do you want to add this transaction?").ask()
   if create_asset:
     try:
@@ -214,12 +222,12 @@ def add_transaction_new_asset(portfolio, asset_code, engine):
   else:
     return False
 
-
+#turn database into a pandas DataFrame
 def get_assets(portfolio, engine):
   assets_df = pd.read_sql_query(f"SELECT * FROM assets_in_portfolio JOIN portfolios ON portfolios.portfolio_id = assets_in_portfolio.portfolio_id WHERE portfolios.portfolio_id = {portfolio['portfolio_id']}", con=engine)
   return assets_df
 
-
+#function to show adding an existing asset
 def add_transaction_existing_asset(portfolio, asset, engine):
   os.system("clear")
   print(f"Adding new transaction for the Portfolio: {portfolio['portfolio_name']}")
