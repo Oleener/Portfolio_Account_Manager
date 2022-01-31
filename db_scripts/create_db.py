@@ -100,3 +100,4 @@ print(inspect(engine).get_table_names())
 
 # print panadas to read sql query by selecting all information from portfolio_types
 print(pd.read_sql_query("SELECT * from portfolio_types", con=engine))
+

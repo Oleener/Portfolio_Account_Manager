@@ -7,7 +7,7 @@ from datetime import datetime
 
 from financial.assets import *
 
-
+# function for adding a new portfolio
 def add_portfolio(user_session, engine):
   os.system("clear")
   print("Adding Portfolio:")
@@ -15,7 +15,7 @@ def add_portfolio(user_session, engine):
   print("Portfolio:")
   print("Portfolio Type:")
   
-  # Adding Portfolio Name. SHould be unique for the user
+  # Adding Portfolio Name. Should be unique for the user
   is_portfolio_name_unique = False
   while not is_portfolio_name_unique:
     print("---------------------")
@@ -62,7 +62,7 @@ def add_portfolio(user_session, engine):
       return False
   else:
     return False
-
+# make sure email is verified and the if the user wants to create a new portfolio or manage an existing portfolio.
 def get_portfolio_mode_choices(mode, is_email_verified, is_portfolios_assets_empty):
   if mode == 'Portfolio':
     choices = ['Add New Asset']
@@ -81,15 +81,15 @@ def get_portfolio_mode_choices(mode, is_email_verified, is_portfolios_assets_emp
     else:
       choices.extend(['Verify Email', 'Exit'])
   return choices
-       
+# retrieve portfolios from the Sql database 
 def get_portfolios(user_session, engine):
   portfolios_df = pd.read_sql_query(f"SELECT * FROM portfolios JOIN users ON users.user_id = portfolios.user_id  JOIN portfolio_types on portfolios.portfolio_type_id = portfolio_types.portfolio_type_id WHERE users.user_id = {user_session['user_id']} AND portfolios.is_removed = False", con=engine)
   return portfolios_df
 
-
+# retrieve basic portfolio info
 def get_portfolio_info(portfolio, engine):
   assets_df = pd.read_sql_query(f"SELECT assets_in_portfolio.asset_in_portfolio_id, assets_in_portfolio.asset_code, assets_in_portfolio.asset_holdings, assets_in_portfolio.asset_avg_buy_price, assets_in_portfolio.asset_fixed_profit_loss_currency, assets_in_portfolio.asset_fixed_profit_loss_percentage, assets_in_portfolio.sum_of_investments, assets_in_portfolio.buy_total_amount, assets_in_portfolio.sold_total_amount, assets_in_portfolio.sold_total_currency,portfolio_types.portfolio_type FROM portfolios JOIN assets_in_portfolio ON assets_in_portfolio.portfolio_id = portfolios.portfolio_id JOIN portfolio_types ON portfolios.portfolio_type_id = portfolio_types.portfolio_type_id WHERE portfolios.portfolio_id = {portfolio['portfolio_id']}", con=engine)
-  #assets_df['current_price'] = [get_asset_price(row[0], row[1]) for row in zip(assets_df['portfolio_type'], assets_df['asset_code'])]
+  # assets_df['current_price'] = [get_asset_price(row[0], row[1]) for row in zip(assets_df['portfolio_type'], assets_df['asset_code'])]
   assets_df['current_price'] = get_assets_last_prices(portfolio['portfolio_type'], assets_df['asset_code'].to_list())
   assets_df['asset_balance'] = [float(row[0]) * float(row[1]) for row in zip(assets_df['asset_holdings'], assets_df['current_price'])]
   assets_df['asset_holdings_cost_avg_price'] = [row[0] * row[1] for row in zip(assets_df['asset_holdings'], assets_df['asset_avg_buy_price'])]
@@ -106,7 +106,7 @@ def get_portfolio_info(portfolio, engine):
   portfolio['assets_count'] = assets_df.shape[0]
   
   return (portfolio, assets_df)
-
+# delete a portfolio
 def remove_portfolio(portfolio, engine):
   os.system("clear")
   print(f"Removing Portfolio: {portfolio['portfolio_name']}")
@@ -128,7 +128,7 @@ def remove_portfolio(portfolio, engine):
       return False
   else:
     return False
-      
+# change the name of the portfolio
 def edit_portfolio_name(portfolio, engine):
   os.system("clear")
   print(f"Portfolio Name: {portfolio['portfolio_name']}")
