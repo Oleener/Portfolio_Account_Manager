@@ -65,7 +65,7 @@ CREATE TABLE portfolios (
 # create_assets_in_portfolio_query creates a table which stores the assets in portfolio. This table stores assets_in_portfolio_id, asset_code, asset_name, asset_holdings, asset_avg_buy_price & portfolio_id.
 # A foreign key is generated for portfolio_id referencing portfolios table. 
 create_assets_in_portfolio_query = """
-CREATE TABLE assets_in_portdolio (
+CREATE TABLE assets_in_portfolio (
   asset_in_portfolio_id serial PRIMARY KEY,
   asset_code VARCHAR(10) NOT NULL,
   asset_name VARCHAR(50) NOT NULL,
@@ -78,7 +78,7 @@ CREATE TABLE assets_in_portdolio (
 
 # create_assets_transaction_query creates the two different transaction types, buy & sell. 
 create_assets_transactions_query = """
-CREATE TYPE transaction_types AS ENUM ('But', 'Sell');
+CREATE TYPE transaction_types AS ENUM ('Buy', 'Sell');
 
 # create_assets_transaction_query creates a table which stores asset_transactions. This table stores the asset_transaction_id, transaction_amount, transaction_price, transaction_type, & asset_in_portfolio_id.
 # A foreign key is generated asset_in_portfolio_id referencing assets_in_portfolio table. 
@@ -88,7 +88,7 @@ CREATE TABLE asset_transactions (
   transaction_price float8 NOT NULL,
   tranaction_type transaction_types NOT NULL,
   asset_in_portfolio_id int NOT NULL,
-  FOREIGN KEY (asset_in_portfolio_id) REFERENCES assets_in_portdolio (asset_in_portfolio_id)
+  FOREIGN KEY (asset_in_portfolio_id) REFERENCES assets_in_portfolio (asset_in_portfolio_id)
 );
 """
 
@@ -101,4 +101,3 @@ print(inspect(engine).get_table_names())
 # print panadas to read sql query by selecting all information from portfolio_types
 print(pd.read_sql_query("SELECT * from portfolio_types", con=engine))
 
-#print(pd.read_sql_query("DROP TABLE portfolios", con=engine))
