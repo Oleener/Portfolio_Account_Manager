@@ -86,7 +86,7 @@ def get_portfolios(user_session, engine):
   portfolios_df = pd.read_sql_query(f"SELECT * FROM portfolios JOIN users ON users.user_id = portfolios.user_id  JOIN portfolio_types on portfolios.portfolio_type_id = portfolio_types.portfolio_type_id WHERE users.user_id = {user_session['user_id']} AND portfolios.is_removed = False", con=engine)
   return portfolios_df
 
-#retrieve basic portfolio info
+# retrieve basic portfolio info
 def get_portfolio_info(portfolio, engine):
   assets_df = pd.read_sql_query(f"SELECT assets_in_portfolio.asset_in_portfolio_id, assets_in_portfolio.asset_code, assets_in_portfolio.asset_holdings, assets_in_portfolio.asset_avg_buy_price, assets_in_portfolio.asset_fixed_profit_loss_currency, assets_in_portfolio.asset_fixed_profit_loss_percentage, assets_in_portfolio.sum_of_investments, assets_in_portfolio.buy_total_amount, assets_in_portfolio.sold_total_amount, assets_in_portfolio.sold_total_currency,portfolio_types.portfolio_type FROM portfolios JOIN assets_in_portfolio ON assets_in_portfolio.portfolio_id = portfolios.portfolio_id JOIN portfolio_types ON portfolios.portfolio_type_id = portfolio_types.portfolio_type_id WHERE portfolios.portfolio_id = {portfolio['portfolio_id']}", con=engine)
   #assets_df['current_price'] = [get_asset_price(row[0], row[1]) for row in zip(assets_df['portfolio_type'], assets_df['asset_code'])]
