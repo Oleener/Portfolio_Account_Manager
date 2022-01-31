@@ -40,7 +40,8 @@ def run():
   if login_mode_choice == 'Sign up':
     # Running a sign up flow
     sign_up_result = user_signup(engine) 
-    #user_info = pd.Series({'user_id':1, 'user_first_name':'Kirill', 'user_last_name':'Panov', 'user_email':'us.kirpa1986@gmail.com', 'is_email_verified':False})
+    #test data
+    ##user_info = pd.Series({'user_id':1, 'user_first_name':'Kirill', 'user_last_name':'Panov', 'user_email':'us.kirpa1986@gmail.com', 'is_email_verified':False})
     if isinstance(sign_up_result, bool):
       sys.exit() 
     else:
