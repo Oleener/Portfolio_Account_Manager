@@ -6,7 +6,17 @@ from dotenv import load_dotenv
 import os
 import pandas as pd
 import questionary
-from datetime import datetime
+from datetime import datetime as dt
+
+def list_to_string(l):
+  str = l[0]
+  if len(l) > 1:
+    for i in range(1, len(l)):
+      str = str + ',' + l[i]         
+  return str
+
+
+
 
 load_dotenv()
 av_api_key = os.getenv("ALPHA_VANTAGE_API_KEY")
@@ -58,28 +68,41 @@ def get_assets_price_history(assets_type, assets_code, period_years = None):
       url = f'https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY&symbol={asset}&market=USD&apikey={av_api_key}'
       response = requests.get(url).json()
       df = pd.DataFrame(response['Time Series (Digital Currency Daily)']).T
-      df = df['4a. close (USD)']
+      df = df[['1a. open (USD)', '2a. high (USD)', '3a. low (USD)', '4a. close (USD)', '5. volume']]
+      df.columns = ['open', 'high', 'low', 'close', 'volume']
+      df.columns = pd.MultiIndex.from_product([[asset], df.columns])
       df.index = pd.to_datetime(df.index)
-      df.name = asset
-      df = df.astype(float)
       if period_years:
-        start_date = (pd.Timestamp.today()- pd.Timedelta(days = 365 * period_years))
+        start_date = (pd.Timestamp.today() - pd.Timedelta(days = 365 * period_years))
         df =  df[df.index > start_date] 
-      assets_df[asset] = df
-    df.index.name = 'Date'
+      else:
+        start_date = (pd.Timestamp.today() - pd.Timedelta(days = 365))
+        df =  df[df.index > start_date] 
+      assets_df = pd.concat([assets_df, df], sort=False, axis=1)
     return assets_df
   if assets_type == 'Stocks':
-    alpaca = tradeapi.REST(key_id=al_key_id, secret_key=al_sec_key, api_version='v2')
-    df = alpaca.get_barset(symbols = assets_code, timeframe='1D', limit=1000).df
-    df.index.name = 'Date'
-    if period_years:
-      start_date = (pd.Timestamp.today() - pd.Timedelta(days = 365 * period_years)).isoformat()
-      df =  df[df.index > start_date]
+    alpaca_headers = {'APCA-API-KEY-ID': al_key_id, 'APCA-API-SECRET-KEY': al_sec_key}
+    alpaca_domain = 'https://data.alpaca.markets'
+    alpaca_endpoint = '/v2/stocks/bars'
+    alpaca_request_url = alpaca_domain + alpaca_endpoint
     assets_df = pd.DataFrame()
+    if period_years:
+      start_date = (pd.Timestamp(dt.today(), tz='America/New_York') - pd.Timedelta(days = 365 * period_years)).isoformat()
+    else:
+      start_date = (pd.Timestamp(dt.today(), tz='America/New_York') - pd.Timedelta(days = 365)).isoformat()
+    alpaca_params = {'start': start_date, 'symbols': list_to_string(assets_code), 'timeframe': '1Day'}
+    alpaca_response = requests.get(alpaca_request_url, headers=alpaca_headers, params = alpaca_params).json()
     for asset in assets_code:
-      assets_df[asset] = df[asset]['close']
-    assets_df.index = assets_df.index.date
+      df = pd.DataFrame(alpaca_response['bars'][asset])[['t', 'o', 'h', 'l', 'c', 'v']]
+      df.index = pd.to_datetime(df['t'], infer_datetime_format=True)
+      df.index = df.index.date
+      df = df.drop(columns='t')
+      df.columns = ['open', 'high', 'low', 'close', 'volume']
+      df.columns = pd.MultiIndex.from_product([[asset], df.columns])
+      assets_df = pd.concat([assets_df, df], sort=False, axis=1)
     return assets_df
+
+
 
 def add_transaction(portfolio, engine):
   os.system("clear")
