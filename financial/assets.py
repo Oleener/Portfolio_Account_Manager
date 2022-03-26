@@ -23,11 +23,11 @@ av_api_key = os.getenv("ALPHA_VANTAGE_API_KEY")
 al_key_id = os.getenv("ALPACA_KEY_ID")
 al_sec_key = os.getenv("ALPACA_SECRET_KEY")
 
+def get_asset_last_prices(assets_type, asset):
+  return get_asset_price(assets_type, asset)
+
 def get_assets_last_prices(assets_type, assets_list):
   prices = []
-  #if assets_type == 'Stocks':
-  #  prices = get_stocks_price(assets_list)
-  #else:
   for asset in assets_list:
     prices.append(get_asset_price(assets_type, asset))
   return prices
@@ -139,7 +139,45 @@ def add_transaction(portfolio, engine):
       return add_transaction_existing_asset(portfolio, asset_in_portfolio_df, engine)
   else:
     return add_transaction_new_asset(portfolio, asset_code, engine)
-    
+
+def get_asset_analysis_parameters():
+  is_valid_fast = False
+  while not is_valid_fast:
+    print("---------------------")
+    try:
+      fast = int(questionary.text(f"Enter a rolling window for the fast moving averages:").ask()) 
+      is_valid_fast = True
+    except:
+      print(f"\n  Wrong number format.\n") 
+      try_again = questionary.confirm("Try to enter the fast rolling window again?").ask()
+      if not try_again:
+        return False
+  is_valid_long = False
+  while not is_valid_long:
+    print("---------------------")
+    try:
+      long = int(questionary.text(f"Enter a rolling window for the long moving averages:").ask()) 
+      is_valid_long = True
+    except:
+      print(f"\n  Wrong number format.\n") 
+      try_again = questionary.confirm("Try to enter the long rolling window again?").ask()
+      if not try_again:
+        return False     
+  is_valid_days_predict = False
+  while not is_valid_days_predict:
+    print("---------------------")
+    try:
+      days_predict = int(questionary.text(f"Enter a number of days to define a prediction interval:").ask()) 
+      is_valid_days_predict = True
+    except:
+      print(f"\n  Wrong number format.\n") 
+      try_again = questionary.confirm("Try to enter the number of days for the prediction interval again?").ask()
+      if not try_again:
+        return False  
+  predictors = ['SMA_ratio', 'EMA_ratio', 'ATR_ratio', 'MACD', 'RSI_ratio', 'ROC_ratio']    
+  predictors_selected = questionary.checkbox('Please pick technical indicators you want to use for the analysis', choices=predictors).ask()
+  model_selected = questionary.select("Select the model you want to use for the analysis", choices = ["RandomForestClassifier", "KNeighborsClassifier"], use_shortcuts=True).ask()
+  return int(fast), int(long), int(days_predict), predictors_selected, model_selected
       
 def add_transaction_new_asset(portfolio, asset_code, engine):
   os.system("clear")
@@ -156,7 +194,7 @@ def add_transaction_new_asset(portfolio, asset_code, engine):
   while not is_valid_date:
     print("---------------------")
     try:
-      transaction_date = datetime.strptime(questionary.text("Enter Transaction Date:").ask(), '%Y-%m-%d').date()
+      transaction_date = dt.strptime(questionary.text("Enter Transaction Date:").ask(), '%Y-%m-%d').date()
       is_valid_date = True
       os.system("clear")
       print(f"Adding new transaction for the Portfolio: {portfolio['portfolio_name']}")
@@ -236,12 +274,7 @@ def get_assets(portfolio, engine):
   return assets_df
 
 
-def add_transaction_existing_asset(portfolio, asset, engine):
-  os.system("clear")
-  print(f"Adding new transaction for the Portfolio: {portfolio['portfolio_name']}")
-  print(f"Type of the Asset: {portfolio['portfolio_type']}")
-  print("---------------------")
-  print(f"Asset Code: {asset['asset_code']}")
+def add_transaction_existing_asset(portfolio, asset, engine, asset_str):
   print("Transaction Type:")
   print("Transaction Date (YYYY-MM-DD):")
   print(f"Transaction Amount (in {asset['asset_code']}):")
@@ -250,10 +283,7 @@ def add_transaction_existing_asset(portfolio, asset, engine):
   
   transaction_type = questionary.select("Select the transaction type:", ['Buy', 'Sell']).ask()
   os.system("clear")
-  print(f"Adding new transaction for the Portfolio: {portfolio['portfolio_name']}")
-  print(f"Type of the Asset: {portfolio['portfolio_type']}")
-  print("---------------------")
-  print(f"Asset Code: {asset['asset_code']}")
+  print(asset_str)
   print(f"Transaction Type: {transaction_type}")
   print("Transaction Date (YYYY-MM-DD):")
   print(f"Transaction Amount (in {asset['asset_code']}):")
@@ -264,13 +294,10 @@ def add_transaction_existing_asset(portfolio, asset, engine):
   while not is_valid_date:
     print("---------------------")
     try:
-      transaction_date = datetime.strptime(questionary.text("Enter Transaction Date:").ask(), '%Y-%m-%d').date()
+      transaction_date = dt.strptime(questionary.text("Enter Transaction Date:").ask(), '%Y-%m-%d').date()
       is_valid_date = True
       os.system("clear")
-      print(f"Adding new transaction for the Portfolio: {portfolio['portfolio_name']}")
-      print(f"Type of the Asset: {portfolio['portfolio_type']}")
-      print("---------------------")
-      print(f"Asset Code: {asset['asset_code']}")
+      print(asset_str)
       print(f"Transaction Type: {transaction_type}")
       print(f"Transaction Date (YYYY-MM-DD): {transaction_date}")
       print(f"Transaction Amount (in {asset['asset_code']}):")
@@ -289,10 +316,7 @@ def add_transaction_existing_asset(portfolio, asset, engine):
       transaction_amount = float(questionary.text(f"Enter Transaction Amount (in {asset['asset_code']}):").ask())
       is_amount_valid = True
       os.system("clear")
-      print(f"Adding new transaction for the Portfolio: {portfolio['portfolio_name']}")
-      print(f"Type of the Asset: {portfolio['portfolio_type']}")
-      print("---------------------")
-      print(f"Asset Code: {asset['asset_code']}")
+      print(asset_str)
       print(f"Transaction Type: {transaction_type}")
       print(f"Transaction Date (YYYY-MM-DD): {transaction_date}")
       print(f"Transaction Amount (in {asset['asset_code']}): {transaction_amount}")
@@ -311,10 +335,7 @@ def add_transaction_existing_asset(portfolio, asset, engine):
       transaction_price = float(questionary.text(f"Enter the Price ({asset['asset_code']}/USD):").ask())
       is_price_valid = True
       os.system("clear")
-      print(f"Adding new transaction for the Portfolio: {portfolio['portfolio_name']}")
-      print(f"Type of the Asset: {portfolio['portfolio_type']}")
-      print("---------------------")
-      print(f"Asset Code: {asset['asset_code']}")
+      print(asset_str)
       print(f"Transaction Type: {transaction_type}")
       print("Transaction Date (YYYY-MM-DD): {transaction_date}")
       print(f"Transaction Amount (in {asset['asset_code']}): {transaction_amount}")
@@ -334,7 +355,7 @@ def add_transaction_existing_asset(portfolio, asset, engine):
         new_sold_total_amount = asset['sold_total_amount'] + transaction_amount
         new_sold_total_currency = asset['sold_total_currency'] + transaction_amount_usd
         new_asset_fixed_profit_loss_currency = asset['asset_fixed_profit_loss_currency'] + (transaction_amount_usd - transaction_amount * asset['asset_avg_buy_price'])
-        new_asset_fixed_profit_loss_percentage = new_asset_fixed_profit_loss_currency / asset['sum_of_investments']
+        new_asset_fixed_profit_loss_percentage = (new_asset_fixed_profit_loss_currency / asset['sum_of_investments'])*100
         engine.execute(f"UPDATE assets_in_portfolio SET asset_holdings = {new_holdings}, asset_fixed_profit_loss_currency = {new_asset_fixed_profit_loss_currency}, asset_fixed_profit_loss_percentage = {new_asset_fixed_profit_loss_percentage}, sold_total_amount = {new_sold_total_amount}, sold_total_currency = {new_sold_total_currency}  WHERE asset_in_portfolio_id = {asset['asset_in_portfolio_id']}")
         engine.execute(f"INSERT INTO asset_transactions (transaction_amount, transaction_price, tranaction_type, asset_in_portfolio_id) VALUES ({transaction_amount}, {transaction_price}, '{transaction_type}', {asset['asset_in_portfolio_id']})")
       elif transaction_type == 'Buy':
@@ -343,7 +364,7 @@ def add_transaction_existing_asset(portfolio, asset, engine):
         new_buy_total_amount = asset['buy_total_amount'] + transaction_amount
         new_asset_avg_buy_price = new_sum_of_investments / new_buy_total_amount
         new_asset_fixed_profit_loss_currency = asset['sold_total_currency'] - asset['sold_total_amount'] * new_asset_avg_buy_price
-        new_asset_fixed_profit_loss_percentage = new_asset_fixed_profit_loss_currency / new_sum_of_investments
+        new_asset_fixed_profit_loss_percentage = (new_asset_fixed_profit_loss_currency / new_sum_of_investments)*100
         engine.execute(f"UPDATE assets_in_portfolio SET asset_holdings = {new_holdings}, sum_of_investments = {new_sum_of_investments}, buy_total_amount = {new_buy_total_amount}, asset_fixed_profit_loss_currency = {new_asset_fixed_profit_loss_currency}, asset_fixed_profit_loss_percentage = {new_asset_fixed_profit_loss_percentage}, asset_avg_buy_price = {new_asset_avg_buy_price}  WHERE asset_in_portfolio_id = {asset['asset_in_portfolio_id']}")
         engine.execute(f"INSERT INTO asset_transactions (transaction_amount, transaction_price, tranaction_type, asset_in_portfolio_id) VALUES ({transaction_amount}, {transaction_price}, '{transaction_type}', {asset['asset_in_portfolio_id']})")
     except: 
