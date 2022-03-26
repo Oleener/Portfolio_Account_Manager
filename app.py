@@ -89,22 +89,19 @@ def run():
   # Entering Global Mode
   while global_mode:
     os.system("clear") 
-    print("Global Management Mode", end='\n\n')         
-    
     # Not entering Portfolio Management Mode autamatically without changing this falg on one of Global Mode steps
     porfolio_management_mode = False
-    
-    # Requestion the list of user's portfolios from the DB    
+    # Requestion the list of user's portfolios from the DB   
     portfolios = get_portfolios(user_session, engine) 
-    
-    print("----------------------------")
-    print("The list of your portfolios:")
-    print("----------------------------")
+    print("Global Management Mode\n" + 
+          "----------------------------\n" +
+          "The list of your portfolios:\n" + 
+          "----------------------------")         
     
     # The case when there are no portgolios connected with user's profile
     if portfolios.empty: 
-      print("No portfolios added")
-      print("----------------------------") 
+      print("No portfolios added\n" + 
+            "----------------------------")
     # Case when at least one portfolio exists
     else:
       # Iterating through the list of available (not removed) portfolios
@@ -159,7 +156,7 @@ def run():
     # Entering Portflio Management Mode     
     while porfolio_management_mode:
       os.system("clear")
-      
+      asset_management_mode = False
       # Checking if the portfolio is new
       if is_new_portfolio:
         # Creating an empty DataFrame - new portfolio means no assets added
@@ -171,13 +168,13 @@ def run():
         portfolio = full_portfolio[0]
         portfolio_assets = full_portfolio[1]
       
-      print("Portfolio Management Mode")
-      print("-------------------------")
-      print(f"Managing portfolio: {portfolio['portfolio_name']}")
-      print("----------------------------")
-      print("The list of the assets in the portfolio:")
-      print("----------------------------")  
-      
+      print(f"Portfolio Management Mode\n" +
+            "-------------------------\n" +
+            f"Managing portfolio: {portfolio['portfolio_name']}\n" +
+            "----------------------------\n" +
+            "The list of the assets in the portfolio:\n" +
+            "----------------------------")
+     
       # Flow when there are no assets added  
       if portfolio_assets.empty: 
         print("No assets in the portfolio")
@@ -199,14 +196,16 @@ def run():
         # Getting the list of the asset codes and asks user to select on them to create a new transaction
         selected_asset = portfolio_assets[portfolio_assets['asset_code'] == questionary.select("Select a profile", portfolio_assets['asset_code'].to_list(), use_shortcuts=True).ask()].squeeze()
         # Running adding a new transaction flow for the selected asset
-        asset_transaction = add_transaction_existing_asset(portfolio, selected_asset, engine)
+        asset_management_mode = True
+        
  
       # Generates the web-page to show some porfolio-based statistics. This option is not available for user if user's email in unverified
       if portfolio_management_choice == 'Show Detailed Portfolio Analysis':
         # Getting prices history for the assets in the portfolio
         assets_history = get_assets_price_history(portfolio['portfolio_type'], portfolio_assets['asset_code'].to_list(), period_years=1)
+        assets_history = assets_history.xs(key = 'close', level = 1, axis = 1)
         # Building layout. It returns an app with build-in HTML and visual components
-        app = build_layout(portfolio, assets_history)
+        app = build_layout_portfolio(portfolio, assets_history)
         # Running a web-server based on the app object
         app.run_server()
          
@@ -237,8 +236,52 @@ def run():
       # Terminating the program 
       if portfolio_management_choice == "Exit":
         sys.exit()
-          
       
+      #Entering Asset Management Mode for the selected asset
+      while asset_management_mode:
+        os.system("clear")
+        asset_mode_str = generate_asset_mode_string(selected_asset, portfolio)
+        print(asset_mode_str) 
+
+        
+        asset_management_choice = questionary.select("", choices = ['Add transaction', 'Show asset analysis', 'Go Back', 'Exit'], use_shortcuts=True).ask()   
+
+        if asset_management_choice == 'Add transaction':
+          asset_transaction = add_transaction_existing_asset(portfolio, selected_asset, engine, asset_mode_str)
+          asset_management_mode = False
+        
+        if asset_management_choice == 'Show asset analysis':  
+          if is_email_verified:
+            analysis_choice = questionary.select("", choices = ['Simple Mode', 'Professional Mode', 'Go Back'], use_shortcuts=True).ask()
+          else:
+            print("Professional Mode is not available for users with unverified emails. Please verify your email to unblock Professional Mode or use Simple Mode prediction")
+            analysis_choice = questionary.select("", choices = ['Verify Email', 'Show Simple Mode prediction', 'Go Back'], use_shortcuts=True).ask()
+
+          if analysis_choice == 'Go Back':
+            pass
+          
+          if analysis_choice == 'Simple Mode' or analysis_choice == 'Show Simple Mode prediction':
+            analisys = build_layout_asset(selected_asset['portfolio_type'], selected_asset['asset_code'])
+            prediction = analisys[0]
+            print("----------------------------")
+            print(prediction)  
+            questionary.text("To continue just press Enter").ask()
+          else:
+            fast, long, days_predict, predictors_selected, model_selected = get_asset_analysis_parameters()
+            analisys = build_layout_asset(selected_asset['portfolio_type'], selected_asset['asset_code'], predictors_selected, model_selected, fast, long, days_predict)
+            analisys[1].run_server()
+            
+          
+        if asset_management_choice == 'Go Back':
+        # Exiting the Asset Management Mode in this case
+          asset_management_mode = False
+        
+        # Terminating the program 
+        if asset_management_choice == "Exit":
+          sys.exit()
+        
+        
+        
 # Running the app      
 if __name__ == "__main__":
   fire.Fire(run)
