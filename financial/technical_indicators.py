@@ -104,6 +104,7 @@ def calc_ADX(high, prev_high, low, prev_low, prev_close, fast, long):
     
     return df
 
+# Function to calculate long and short RSI
 def calc_RSI(close, fast, long):
     df = pd.DataFrame(index=close.index)
     df['Diff'] = close.transform(lambda x: x.diff())
@@ -132,6 +133,7 @@ def calc_RSI(close, fast, long):
     
     return df[[rsi_fast, rsi_long, 'RSI_ratio']]
 
+# Function to calculate macd indicator
 def calc_MACD(close, fast, long):
     df = pd.DataFrame(index=close.index)
     
