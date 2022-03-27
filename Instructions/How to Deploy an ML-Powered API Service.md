@@ -116,10 +116,8 @@ Invoke-Binary-Classifier
 12. On the Actions menu, choose Deploy API.
 
 13. Create a new stage.
-```
-Beta
-```
-
+    ```Beta```
+    
 14. Choose Deploy.
 
 15. Make note of the invoke URL that will be displayed on the page at this stage. 
