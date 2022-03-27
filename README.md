@@ -1,6 +1,7 @@
-# Portfolio_Account_Manager
+# Portfolio Account Manager
 This application is a stock and cryptocurrency portfolio management tool that allows the user to create, delete, edit, and manage different portfolios as well as analyze their performance after creating a user account on the application. After verifying their email address, the user is then able to receive even better insights with deeper analysis features.
 
+# Portfolio Account Manager V2
 Version 2 of Portfolio Account Manager builds a model that returns a recommendation on whether to trade long or short using a number of technical indicators and Binary Classifiers. Along with asset prediction and analysis functionalities in the current Portfolio Account Manager Analyzer tool.
 
 ---
