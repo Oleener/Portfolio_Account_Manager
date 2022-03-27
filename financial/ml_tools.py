@@ -11,6 +11,7 @@ from datetime import date
 #from technical_indicators import prepare_asset_for_analysis
 from financial.technical_indicators import prepare_asset_for_analysis
 
+# Function to train a machine learning model
 def train_model(data:pd.DataFrame, model,target_variables):
     training_begin = data.index.min()
     training_end = training_begin + DateOffset(months=24)
@@ -35,6 +36,7 @@ def train_model(data:pd.DataFrame, model,target_variables):
         model = model_cv.fit(X_train,Y_train.to_numpy().ravel()).best_estimator_
     return model, X_test, Y_test
 
+# Function to create a prediction from the model trained in the above function
 def validate_model(model, X_test, Y_test):
     Y_pred = model.predict(X_test)
     report = pd.DataFrame(classification_report(Y_test, Y_pred, output_dict=True)).transpose().reset_index()
@@ -45,6 +47,7 @@ def validate_model(model, X_test, Y_test):
     pred.drop(columns=['Date'], inplace=True)
     return pred, report
 
+# Function that gives a prediction based on the day
 def predict_the_day(model, data, target_variables):
     day_data = data[target_variables][-1:]
     #print(day_data)
