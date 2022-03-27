@@ -1,6 +1,8 @@
 # Portfolio_Account_Manager
 This application is a stock and cryptocurrency portfolio management tool that allows the user to create, delete, edit, and manage different portfolios as well as analyze their performance after creating a user account on the application. After verifying their email address, the user is then able to receive even better insights with deeper analysis features.
 
+Version 2 of Portfolio Account Manager builds a model that returns a recommendation on whether to trade long or short using a number of technical indicators and Binary Classifiers. Along with asset prediction and analysis functionalities in the current Portfolio Account Manager Analyzer tool.
+
 ---
 
 ## Technologies
@@ -87,18 +89,18 @@ python app.py
 
 Upon launching the portfolio account manager application you will be greated with the following prompt.
 
-![1](https://github.com/Oleener/Portfolio_Account_Manager/blob/olena_dev/Instructions/1.png)
+![1](https://github.com/Oleener/Portfolio_Account_Manager/blob/main/Instructions/1.png)
 
 To use the application you will need to create a user profile via the ```Sign Up``` option. 
 If you already have a profile set up proceed using the ```Log In``` option.
 
 Once logged in, an email verification screen will be prompted lettting you know whether your account is verified or not. This screen will also give you the option to verify your account through your email. 
 
-![2](https://github.com/Oleener/Portfolio_Account_Manager/blob/olena_dev/Instructions/2.png) 
+![2](https://github.com/Oleener/Portfolio_Account_Manager/blob/main/Instructions/2.png) 
 
 After proceeding with email verification, Global Management Mode will be activated which will display the users stock and crypto portfolio.
 
-![3](https://github.com/Oleener/Portfolio_Account_Manager/blob/olena_dev/Instructions/3.png)
+![3](https://github.com/Oleener/Portfolio_Account_Manager/blob/main/Instructions/3.png)
 
 Once in the global management mode, the user will have the ability to:
 
@@ -124,18 +126,29 @@ The user is able to perform deep portfolio analysis on their portfolio ONLY if t
 
 The powerpoint below summerizes the main points of Portfolio Account Manager. 
 
-![powerpoint](https://github.com/Oleener/Portfolio_Account_Manager/blob/olena_dev/Instructions/Fintech%20-%20Project%201.pdf)
+![powerpoint_1](https://github.com/Oleener/Portfolio_Account_Manager/blob/main/Instructions/Fintech%20-%20Project%201.pdf)
+
+The powerpoint below summerizes the main points of Portfolio Account Manager version 2 including the machine learning models. 
+
+![powerpoint_2](https://github.com/Oleener/Portfolio_Account_Manager/blob/main/Instructions/Fintech%20-%20Project%202.pdf)
 
 ---
 
 ## Contributors
 
-Brought To you by: 
+Portfolio Account Manager Brought To you by: 
 
 Olena Shemedyuk (olenashemedyuk@gmail.com)
 Kirill Panov (us.kirpa1986@gmail.com)
 Isaiah Tensae (isaiahtensae@gmail.com)
 Nick Strohm (Strohm241@gmail.com)
+
+Portfolio Account Manager Version 2 Brought To you by:
+
+Kirill Panov (us.kirpa1986@gmail.com)
+Rachel Donham (rachaeldonham@gmail.com)
+Isaiah Tensae (isaiahtensae@gmail.com)
+Olena Shemedyuk (olenashemedyuk@gmail.com)
 
 ---
 
