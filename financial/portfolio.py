@@ -7,7 +7,7 @@ from datetime import datetime
 
 from financial.assets import *
 
-
+# Function to add a new portfolio
 def add_portfolio(user_session, engine):
   os.system("clear")
   print("Adding Portfolio:")
@@ -63,6 +63,7 @@ def add_portfolio(user_session, engine):
   else:
     return False
 
+# Function adds more portfolio options for users that have verified their email
 def get_portfolio_mode_choices(mode, is_email_verified, is_portfolios_assets_empty):
   if mode == 'Portfolio':
     choices = ['Add New Asset']
@@ -82,11 +83,12 @@ def get_portfolio_mode_choices(mode, is_email_verified, is_portfolios_assets_emp
       choices.extend(['Verify Email', 'Exit'])
   return choices
        
+# Function that gathers portfolio data
 def get_portfolios(user_session, engine):
   portfolios_df = pd.read_sql_query(f"SELECT * FROM portfolios JOIN users ON users.user_id = portfolios.user_id  JOIN portfolio_types on portfolios.portfolio_type_id = portfolio_types.portfolio_type_id WHERE users.user_id = {user_session['user_id']} AND portfolios.is_removed = False", con=engine)
   return portfolios_df
 
-
+# Function that processes the data from the last function and adds it to dataframes
 def get_portfolio_info(portfolio, engine):
   assets_df = pd.read_sql_query(f"SELECT assets_in_portfolio.asset_in_portfolio_id, assets_in_portfolio.asset_code, assets_in_portfolio.asset_holdings, assets_in_portfolio.asset_avg_buy_price, assets_in_portfolio.asset_fixed_profit_loss_currency, assets_in_portfolio.asset_fixed_profit_loss_percentage, assets_in_portfolio.sum_of_investments, assets_in_portfolio.buy_total_amount, assets_in_portfolio.sold_total_amount, assets_in_portfolio.sold_total_currency,portfolio_types.portfolio_type FROM portfolios JOIN assets_in_portfolio ON assets_in_portfolio.portfolio_id = portfolios.portfolio_id JOIN portfolio_types ON portfolios.portfolio_type_id = portfolio_types.portfolio_type_id WHERE portfolios.portfolio_id = {portfolio['portfolio_id']}", con=engine)
   assets_df['current_price'] = [get_asset_price(row[0], row[1]) for row in zip(assets_df['portfolio_type'], assets_df['asset_code'])]
@@ -107,6 +109,7 @@ def get_portfolio_info(portfolio, engine):
   
   return (portfolio, assets_df)
 
+# Function for removing a portfolio
 def remove_portfolio(portfolio, engine):
   os.system("clear")
   print(f"Removing Portfolio: {portfolio['portfolio_name']}")
@@ -129,6 +132,7 @@ def remove_portfolio(portfolio, engine):
   else:
     return False
       
+# Function that changes the name of an existing portfolio
 def edit_portfolio_name(portfolio, engine):
   os.system("clear")
   print(f"Portfolio Name: {portfolio['portfolio_name']}")
