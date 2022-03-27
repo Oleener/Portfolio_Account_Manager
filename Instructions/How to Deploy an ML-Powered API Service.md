@@ -89,9 +89,7 @@ Test the function code. Use the text below as the payload for the Post method.
 3. Select New API.
 
 4. For API name¸ enter a name.
-```
-RoboTrader
-```
+    ```RoboTrader```
 
 5. Leave Endpoint Type as Regional.
 
@@ -100,24 +98,20 @@ RoboTrader
 7. On the Actions menu, choose Create resource.
 
 8. Enter a name for the resource.
-```
-TradeRecommendation
-```
+    ```TradeRecommendation```
 
 9. After the resource is created, on the Actions menu, choose Create Method to create a POST method.
 
 10. For Integration type, select Lambda Function.
 
 11. For Lambda function, enter the function you created in Step 2.
-```
-Invoke-Binary-Classifier
-```
+    ```Invoke-Binary-Classifier```
 
 12. On the Actions menu, choose Deploy API.
 
 13. Create a new stage.
     ```Beta```
-    
+
 14. Choose Deploy.
 
 15. Make note of the invoke URL that will be displayed on the page at this stage. 
