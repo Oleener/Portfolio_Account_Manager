@@ -23,15 +23,18 @@ av_api_key = os.getenv("ALPHA_VANTAGE_API_KEY")
 al_key_id = os.getenv("ALPACA_KEY_ID")
 al_sec_key = os.getenv("ALPACA_SECRET_KEY")
 
+# Function to get price of an asset from another function
 def get_asset_last_prices(assets_type, asset):
   return get_asset_price(assets_type, asset)
 
+# Function to add prices to a list
 def get_assets_last_prices(assets_type, assets_list):
   prices = []
   for asset in assets_list:
     prices.append(get_asset_price(assets_type, asset))
   return prices
 
+# Function to check if new asset price exists
 def is_asset_exist(asset_type, asset_code):
     try:
       get_asset_price(asset_type, asset_code)
@@ -39,13 +42,13 @@ def is_asset_exist(asset_type, asset_code):
     except Exception:
       return False
 
-
+# Function that calls the alpaca API for stock prices
 def get_stocks_price(asset_codes):
   alpaca = tradeapi.REST(key_id=al_key_id, secret_key=al_sec_key, api_version='v2')
   df = alpaca.get_barset(symbols = asset_codes, timeframe='5Min').df
   print(df)
 
-
+# Function that gets the price of either crypto or stocks depending what the user chose
 def get_asset_price(asset_type, asset_code):
   if asset_type == "Crypto":
     url = f"https://www.alphavantage.co/query?function=CRYPTO_INTRADAY&symbol={asset_code}&market=USD&interval=1min&apikey={av_api_key}"
@@ -61,6 +64,7 @@ def get_asset_price(asset_type, asset_code):
     price = df.iloc[0]['4. close']
     return float(price)
 
+# Function that gathers price history of an asset
 def get_assets_price_history(assets_type, assets_code, period_years = None):
   if assets_type == 'Crypto':
     assets_df = pd.DataFrame()
@@ -103,7 +107,7 @@ def get_assets_price_history(assets_type, assets_code, period_years = None):
     return assets_df
 
 
-
+# Function that allows the user to add a new asset to their account
 def add_transaction(portfolio, engine):
   os.system("clear")
   print(f"Adding new transaction for the Portfolio: {portfolio['portfolio_name']}")
@@ -140,6 +144,7 @@ def add_transaction(portfolio, engine):
   else:
     return add_transaction_new_asset(portfolio, asset_code, engine)
 
+# Function that allows the user to customize their indicators
 def get_asset_analysis_parameters():
   is_valid_fast = False
   while not is_valid_fast:
@@ -179,6 +184,7 @@ def get_asset_analysis_parameters():
   model_selected = questionary.select("Select the model you want to use for the analysis", choices = ["RandomForestClassifier", "KNeighborsClassifier"], use_shortcuts=True).ask()
   return int(fast), int(long), int(days_predict), predictors_selected, model_selected
       
+# Functions that allows the user to add a new transaction of an asset including when it was bought
 def add_transaction_new_asset(portfolio, asset_code, engine):
   os.system("clear")
   print(f"Adding new transaction for the Portfolio: {portfolio['portfolio_name']}")
@@ -268,12 +274,12 @@ def add_transaction_new_asset(portfolio, asset_code, engine):
   else:
     return False
 
-
+# Function that querys info of portfolios from database
 def get_assets(portfolio, engine):
   assets_df = pd.read_sql_query(f"SELECT * FROM assets_in_portfolio JOIN portfolios ON portfolios.portfolio_id = assets_in_portfolio.portfolio_id WHERE portfolios.portfolio_id = {portfolio['portfolio_id']}", con=engine)
   return assets_df
 
-
+# Function that allows the user to add more of an asset they already have
 def add_transaction_existing_asset(portfolio, asset, engine, asset_str):
   print("Transaction Type:")
   print("Transaction Date (YYYY-MM-DD):")
