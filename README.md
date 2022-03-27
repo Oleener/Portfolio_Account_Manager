@@ -34,6 +34,20 @@ The project leverages Pyhton 3.7 with the following packages:
 * [sqlalchemy](https://www.sqlalchemy.org/) - library that facilitates the communication between Python programs and databases.
 * [sys](https://docs.python.org/3/library/sys.html) - Provides functions and variables that are used to manipulate different parts of the python runtime enviorment.
 
+Project 2:
+
+[How_to_Deploy_an_ML_Powered_API_Service](https://github.com/Oleener/Portfolio_Account_Manager/blob/main/Instructions/How%20to%20Deploy%20an%20ML-Powered%20API%20Service.md)
+
+AWS Services used: 
+
+    1. IAM
+
+    2. SageMaker
+
+    3. API Gateway
+
+    4. Lamnda
+    
 ---
 
 ## Installation Guide 
