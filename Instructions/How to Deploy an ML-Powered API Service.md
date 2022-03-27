@@ -19,13 +19,16 @@ Find the name of the endpoint in the Sagemaker console.
 
 # Step 2: Create a Lambda Function to invoke the endpoint
 
-1.On the Lambda console, on the Functions page, choose Create function.
+1. On the Lambda console, on the Functions page, choose Create function.
     a.Choose Author from Scratch
-2.For Function name, enter a name.
+
+2. For Function name, enter a name.
     a.Invoke-Binary-Classifier
-3.For Runtime¸ choose your runtime.
+
+3. For Runtime¸ choose your runtime.
     a.Python 3.9
-4.For Execution role¸ select Use an existing role.
+
+4. For Execution role¸ select Use an existing role.
     a.Demo-API-RD-Role
 
 On the Configuration tab add the environment variable.
