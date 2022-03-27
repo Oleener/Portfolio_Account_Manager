@@ -36,17 +36,14 @@ The project leverages Pyhton 3.7 with the following packages:
 
 Project 2:
 
-[How_to_Deploy_an_ML_Powered_API_Service](https://github.com/Oleener/Portfolio_Account_Manager/blob/main/Instructions/How%20to%20Deploy%20an%20ML-Powered%20API%20Service.md)
+[How to Deploy an ML-Powered API Service](https://github.com/Oleener/Portfolio_Account_Manager/blob/main/Instructions/How%20to%20Deploy%20an%20ML-Powered%20API%20Service.md)
 
 AWS Services used: 
 
-    1. IAM
-
-    2. SageMaker
-
-    3. API Gateway
-
-    4. Lamnda
+* IAM
+* SageMaker
+* API Gateway
+* Lamnda
     
 ---
 
