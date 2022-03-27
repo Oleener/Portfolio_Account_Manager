@@ -14,6 +14,7 @@ default_days_shift = 7
 default_model = 'KNeighborsClassifier'
 default_predictors = ['SMA_ratio', 'MACD', 'RSI_ratio']
 
+# Function that makes the numbers of a portfolio viewable in Dash
 def build_layout_portfolio(portfolio: pd.Series, assets_in_porfolio: pd.DataFrame):
    
     
@@ -39,6 +40,7 @@ def build_layout_portfolio(portfolio: pd.Series, assets_in_porfolio: pd.DataFram
   ])
   return app
 
+# Function that creates the graphs of the predictions of the assets viewable in Dash
 def build_layout_asset(asset_type, asset, predictors = default_predictors, model = default_model, fast = default_fast, long = default_long, days_predict = default_days_shift):
   asset_hist_with_indicators, asset_hist_for_ML = prepare_asset_for_analysis(asset_type, asset, fast, long, days_predict)
   model, X_test, Y_test = train_model(asset_hist_for_ML, model, predictors)    
