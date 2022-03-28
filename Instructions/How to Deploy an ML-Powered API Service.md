@@ -120,3 +120,20 @@ Test the function code. Use the text below as the payload for the Post method.
 ---
 
 # Step 4: Call the API
+
+1. To call the API and receive a trade recommendation, load the following libraries:
+
+    a. ```import requests```
+    b. ```import json```
+
+2. Set a variable for the url.
+
+    a. api_url = "https://ux572yudpa.execute-api.us-west-2.amazonaws.com/Beta/traderecommendation"
+
+3. Set a variable with the latest values for the 2 technical indicators used in the model.
+
+    a. ```payload = {“data”:”11.13,13.62”}```
+
+4. Post the data to the API to receive a trade recommendation in response.
+    
+    a. ```response = requests.post(api_url,json=payload).json()```
