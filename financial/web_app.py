@@ -16,12 +16,13 @@ default_predictors = ['SMA_ratio', 'MACD', 'RSI_ratio']
 
 def build_layout_portfolio(portfolio: pd.Series, assets_in_porfolio: pd.DataFrame):
    
-    
   app = Dash() 
   df_changes = assets_in_porfolio.pct_change().dropna()
   df_cumprod = (1 + df_changes).cumprod()
+  # create the line graphs
   fig1 = px.line(df_changes, title = "Daily Returns", labels = ['Date', 'Daily Return'])
   fig2 = px.line(df_cumprod, title = "Cumulative Product")
+  # style the web application
   app.layout = html.Div(children=[
     html.H2(children=f"Analisys for {portfolio['portfolio_name']} (Test Mode)"),
 

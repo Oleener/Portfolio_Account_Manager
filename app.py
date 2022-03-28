@@ -197,7 +197,6 @@ def run():
         selected_asset = portfolio_assets[portfolio_assets['asset_code'] == questionary.select("Select a profile", portfolio_assets['asset_code'].to_list(), use_shortcuts=True).ask()].squeeze()
         # Running adding a new transaction flow for the selected asset
         asset_management_mode = True
-        
  
       # Generates the web-page to show some porfolio-based statistics. This option is not available for user if user's email in unverified
       if portfolio_management_choice == 'Show Detailed Portfolio Analysis':
@@ -279,8 +278,6 @@ def run():
         # Terminating the program 
         if asset_management_choice == "Exit":
           sys.exit()
-        
-        
         
 # Running the app      
 if __name__ == "__main__":

@@ -1,3 +1,4 @@
+# import necassary libraries and dependencies 
 from numpy import float64
 import requests
 import alpaca_trade_api as tradeapi
@@ -18,10 +19,12 @@ def list_to_string(l):
 
 
 
+# retrieve all api and secret keys
 load_dotenv()
 av_api_key = os.getenv("ALPHA_VANTAGE_API_KEY")
 al_key_id = os.getenv("ALPACA_KEY_ID")
 al_sec_key = os.getenv("ALPACA_SECRET_KEY")
+
 
 def get_asset_last_prices(assets_type, asset):
   return get_asset_price(assets_type, asset)
@@ -32,6 +35,9 @@ def get_assets_last_prices(assets_type, assets_list):
     prices.append(get_asset_price(assets_type, asset))
   return prices
 
+# make sure the asset exists. 
+# If it does then return that the asset exists and it's price. 
+# If asset doesn't exist, returns false.
 def is_asset_exist(asset_type, asset_code):
     try:
       get_asset_price(asset_type, asset_code)
@@ -44,7 +50,6 @@ def get_stocks_price(asset_codes):
   alpaca = tradeapi.REST(key_id=al_key_id, secret_key=al_sec_key, api_version='v2')
   df = alpaca.get_barset(symbols = asset_codes, timeframe='5Min').df
   print(df)
-
 
 def get_asset_price(asset_type, asset_code):
   if asset_type == "Crypto":
@@ -60,8 +65,10 @@ def get_asset_price(asset_type, asset_code):
     df = pd.DataFrame(response['Time Series (1min)']).T
     price = df.iloc[0]['4. close']
     return float(price)
-
+  
+# function used to retrieve asset price history in a time period of years
 def get_assets_price_history(assets_type, assets_code, period_years = None):
+    # historical data for crypto currency 
   if assets_type == 'Crypto':
     assets_df = pd.DataFrame()
     for asset in assets_code:
@@ -80,6 +87,7 @@ def get_assets_price_history(assets_type, assets_code, period_years = None):
         df =  df[df.index > start_date] 
       assets_df = pd.concat([assets_df, df], sort=False, axis=1)
     return assets_df
+    # historical data for stocks 
   if assets_type == 'Stocks':
     alpaca_headers = {'APCA-API-KEY-ID': al_key_id, 'APCA-API-SECRET-KEY': al_sec_key}
     alpaca_domain = 'https://data.alpaca.markets'
@@ -102,15 +110,12 @@ def get_assets_price_history(assets_type, assets_code, period_years = None):
       assets_df = pd.concat([assets_df, df], sort=False, axis=1)
     return assets_df
 
-
-
 def add_transaction(portfolio, engine):
   os.system("clear")
   print(f"Adding new transaction for the Portfolio: {portfolio['portfolio_name']}")
   print(f"Type of the Asset: {portfolio['portfolio_type']}")
   print("---------------------")
   print("Asset Code:")
-  
   asset_exist = False
   while not asset_exist:
     print("---------------------")
@@ -128,7 +133,7 @@ def add_transaction(portfolio, engine):
       if not try_again:
         return False
       
-  #Checking if asset exists in the portfolio
+  # Checking if asset exists in the portfolio
   asset_in_portfolio_df = pd.read_sql_query(f"SELECT * FROM portfolios JOIN assets_in_portfolio ON portfolios.portfolio_id = assets_in_portfolio.portfolio_id WHERE portfolios.portfolio_id = {portfolio['portfolio_id']} AND assets_in_portfolio.asset_code = '{asset_code}'", con=engine).squeeze()
   if not asset_in_portfolio_df.empty:
     print("---------------------")
@@ -252,7 +257,7 @@ def add_transaction_new_asset(portfolio, asset_code, engine):
       try_again = questionary.confirm("Try to enter the price again?").ask()
       if not try_again:
         return False
-      
+  # add the asset to the database 
   create_asset = questionary.confirm("Do you want to add this transaction?").ask()
   if create_asset:
     try:
@@ -268,11 +273,10 @@ def add_transaction_new_asset(portfolio, asset_code, engine):
   else:
     return False
 
-
+# turn database into a pandas DataFrame
 def get_assets(portfolio, engine):
   assets_df = pd.read_sql_query(f"SELECT * FROM assets_in_portfolio JOIN portfolios ON portfolios.portfolio_id = assets_in_portfolio.portfolio_id WHERE portfolios.portfolio_id = {portfolio['portfolio_id']}", con=engine)
   return assets_df
-
 
 def add_transaction_existing_asset(portfolio, asset, engine, asset_str):
   print("Transaction Type:")
