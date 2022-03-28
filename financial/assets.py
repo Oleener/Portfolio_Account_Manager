@@ -7,7 +7,17 @@ from dotenv import load_dotenv
 import os
 import pandas as pd
 import questionary
-from datetime import datetime
+from datetime import datetime as dt
+
+def list_to_string(l):
+  str = l[0]
+  if len(l) > 1:
+    for i in range(1, len(l)):
+      str = str + ',' + l[i]         
+  return str
+
+
+
 
 # retrieve all api and secret keys
 load_dotenv()
@@ -15,12 +25,12 @@ av_api_key = os.getenv("ALPHA_VANTAGE_API_KEY")
 al_key_id = os.getenv("ALPACA_KEY_ID")
 al_sec_key = os.getenv("ALPACA_SECRET_KEY")
 
-# retreive asset's last price
+
+def get_asset_last_prices(assets_type, asset):
+  return get_asset_price(assets_type, asset)
+
 def get_assets_last_prices(assets_type, assets_list):
   prices = []
-  # if assets_type == 'Stocks':
-  # prices = get_stocks_price(assets_list)
-  # else:
   for asset in assets_list:
     prices.append(get_asset_price(assets_type, asset))
   return prices
@@ -35,12 +45,12 @@ def is_asset_exist(asset_type, asset_code):
     except Exception:
       return False
 
+
 def get_stocks_price(asset_codes):
   alpaca = tradeapi.REST(key_id=al_key_id, secret_key=al_sec_key, api_version='v2')
   df = alpaca.get_barset(symbols = asset_codes, timeframe='5Min').df
   print(df)
 
- # function used to retrieve either stock or crypto asset price from api 
 def get_asset_price(asset_type, asset_code):
   if asset_type == "Crypto":
     url = f"https://www.alphavantage.co/query?function=CRYPTO_INTRADAY&symbol={asset_code}&market=USD&interval=1min&apikey={av_api_key}"
@@ -64,45 +74,48 @@ def get_assets_price_history(assets_type, assets_code, period_years = None):
     for asset in assets_code:
       url = f'https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY&symbol={asset}&market=USD&apikey={av_api_key}'
       response = requests.get(url).json()
-      get_prices = False
-      while not get_prices:
-        try:
-          df = pd.DataFrame(response['Time Series (Digital Currency Daily)']).T
-          get_prices = True
-        except:
-          get_prices = False
-      df = df['4a. close (USD)']
+      df = pd.DataFrame(response['Time Series (Digital Currency Daily)']).T
+      df = df[['1a. open (USD)', '2a. high (USD)', '3a. low (USD)', '4a. close (USD)', '5. volume']]
+      df.columns = ['open', 'high', 'low', 'close', 'volume']
+      df.columns = pd.MultiIndex.from_product([[asset], df.columns])
       df.index = pd.to_datetime(df.index)
-      df.name = asset
-      df = df.astype(float)
       if period_years:
-        start_date = (pd.Timestamp.today()- pd.Timedelta(days = 365 * period_years))
+        start_date = (pd.Timestamp.today() - pd.Timedelta(days = 365 * period_years))
         df =  df[df.index > start_date] 
-      assets_df[asset] = df
-    df.index.name = 'Date'
+      else:
+        start_date = (pd.Timestamp.today() - pd.Timedelta(days = 365))
+        df =  df[df.index > start_date] 
+      assets_df = pd.concat([assets_df, df], sort=False, axis=1)
     return assets_df
     # historical data for stocks 
   if assets_type == 'Stocks':
-    alpaca = tradeapi.REST(key_id=al_key_id, secret_key=al_sec_key, api_version='v2')
-    df = alpaca.get_barset(symbols = assets_code, timeframe='1D', limit=1000).df
-    df.index.name = 'Date'
-    if period_years:
-      start_date = (pd.Timestamp.today() - pd.Timedelta(days = 365 * period_years)).isoformat()
-      df =  df[df.index > start_date]
+    alpaca_headers = {'APCA-API-KEY-ID': al_key_id, 'APCA-API-SECRET-KEY': al_sec_key}
+    alpaca_domain = 'https://data.alpaca.markets'
+    alpaca_endpoint = '/v2/stocks/bars'
+    alpaca_request_url = alpaca_domain + alpaca_endpoint
     assets_df = pd.DataFrame()
+    if period_years:
+      start_date = (pd.Timestamp(dt.today(), tz='America/New_York') - pd.Timedelta(days = 365 * period_years)).isoformat()
+    else:
+      start_date = (pd.Timestamp(dt.today(), tz='America/New_York') - pd.Timedelta(days = 365)).isoformat()
+    alpaca_params = {'start': start_date, 'symbols': list_to_string(assets_code), 'timeframe': '1Day'}
+    alpaca_response = requests.get(alpaca_request_url, headers=alpaca_headers, params = alpaca_params).json()
     for asset in assets_code:
-      assets_df[asset] = df[asset]['close']
-    assets_df.index = assets_df.index.date
+      df = pd.DataFrame(alpaca_response['bars'][asset])[['t', 'o', 'h', 'l', 'c', 'v']]
+      df.index = pd.to_datetime(df['t'], infer_datetime_format=True)
+      df.index = df.index.date
+      df = df.drop(columns='t')
+      df.columns = ['open', 'high', 'low', 'close', 'volume']
+      df.columns = pd.MultiIndex.from_product([[asset], df.columns])
+      assets_df = pd.concat([assets_df, df], sort=False, axis=1)
     return assets_df
-# Add more to an asset in a portfolio 
+
 def add_transaction(portfolio, engine):
   os.system("clear")
   print(f"Adding new transaction for the Portfolio: {portfolio['portfolio_name']}")
   print(f"Type of the Asset: {portfolio['portfolio_type']}")
   print("---------------------")
   print("Asset Code:")
-  # Add a new asset to the portfolio if it exists in the database 
-  # and if it doesn't return a a try again prompt
   asset_exist = False
   while not asset_exist:
     print("---------------------")
@@ -131,8 +144,46 @@ def add_transaction(portfolio, engine):
       return add_transaction_existing_asset(portfolio, asset_in_portfolio_df, engine)
   else:
     return add_transaction_new_asset(portfolio, asset_code, engine)
-    
-# New asset bought
+
+def get_asset_analysis_parameters():
+  is_valid_fast = False
+  while not is_valid_fast:
+    print("---------------------")
+    try:
+      fast = int(questionary.text(f"Enter a rolling window for the fast moving averages:").ask()) 
+      is_valid_fast = True
+    except:
+      print(f"\n  Wrong number format.\n") 
+      try_again = questionary.confirm("Try to enter the fast rolling window again?").ask()
+      if not try_again:
+        return False
+  is_valid_long = False
+  while not is_valid_long:
+    print("---------------------")
+    try:
+      long = int(questionary.text(f"Enter a rolling window for the long moving averages:").ask()) 
+      is_valid_long = True
+    except:
+      print(f"\n  Wrong number format.\n") 
+      try_again = questionary.confirm("Try to enter the long rolling window again?").ask()
+      if not try_again:
+        return False     
+  is_valid_days_predict = False
+  while not is_valid_days_predict:
+    print("---------------------")
+    try:
+      days_predict = int(questionary.text(f"Enter a number of days to define a prediction interval:").ask()) 
+      is_valid_days_predict = True
+    except:
+      print(f"\n  Wrong number format.\n") 
+      try_again = questionary.confirm("Try to enter the number of days for the prediction interval again?").ask()
+      if not try_again:
+        return False  
+  predictors = ['SMA_ratio', 'EMA_ratio', 'ATR_ratio', 'MACD', 'RSI_ratio', 'ROC_ratio']    
+  predictors_selected = questionary.checkbox('Please pick technical indicators you want to use for the analysis', choices=predictors).ask()
+  model_selected = questionary.select("Select the model you want to use for the analysis", choices = ["RandomForestClassifier", "KNeighborsClassifier"], use_shortcuts=True).ask()
+  return int(fast), int(long), int(days_predict), predictors_selected, model_selected
+      
 def add_transaction_new_asset(portfolio, asset_code, engine):
   os.system("clear")
   print(f"Adding new transaction for the Portfolio: {portfolio['portfolio_name']}")
@@ -148,7 +199,7 @@ def add_transaction_new_asset(portfolio, asset_code, engine):
   while not is_valid_date:
     print("---------------------")
     try:
-      transaction_date = datetime.strptime(questionary.text("Enter Transaction Date:").ask(), '%Y-%m-%d').date()
+      transaction_date = dt.strptime(questionary.text("Enter Transaction Date:").ask(), '%Y-%m-%d').date()
       is_valid_date = True
       os.system("clear")
       print(f"Adding new transaction for the Portfolio: {portfolio['portfolio_name']}")
@@ -227,13 +278,7 @@ def get_assets(portfolio, engine):
   assets_df = pd.read_sql_query(f"SELECT * FROM assets_in_portfolio JOIN portfolios ON portfolios.portfolio_id = assets_in_portfolio.portfolio_id WHERE portfolios.portfolio_id = {portfolio['portfolio_id']}", con=engine)
   return assets_df
 
-# function to show adding an existing asset
-def add_transaction_existing_asset(portfolio, asset, engine):
-  os.system("clear")
-  print(f"Adding new transaction for the Portfolio: {portfolio['portfolio_name']}")
-  print(f"Type of the Asset: {portfolio['portfolio_type']}")
-  print("---------------------")
-  print(f"Asset Code: {asset['asset_code']}")
+def add_transaction_existing_asset(portfolio, asset, engine, asset_str):
   print("Transaction Type:")
   print("Transaction Date (YYYY-MM-DD):")
   print(f"Transaction Amount (in {asset['asset_code']}):")
@@ -242,10 +287,7 @@ def add_transaction_existing_asset(portfolio, asset, engine):
   
   transaction_type = questionary.select("Select the transaction type:", ['Buy', 'Sell']).ask()
   os.system("clear")
-  print(f"Adding new transaction for the Portfolio: {portfolio['portfolio_name']}")
-  print(f"Type of the Asset: {portfolio['portfolio_type']}")
-  print("---------------------")
-  print(f"Asset Code: {asset['asset_code']}")
+  print(asset_str)
   print(f"Transaction Type: {transaction_type}")
   print("Transaction Date (YYYY-MM-DD):")
   print(f"Transaction Amount (in {asset['asset_code']}):")
@@ -256,13 +298,10 @@ def add_transaction_existing_asset(portfolio, asset, engine):
   while not is_valid_date:
     print("---------------------")
     try:
-      transaction_date = datetime.strptime(questionary.text("Enter Transaction Date:").ask(), '%Y-%m-%d').date()
+      transaction_date = dt.strptime(questionary.text("Enter Transaction Date:").ask(), '%Y-%m-%d').date()
       is_valid_date = True
       os.system("clear")
-      print(f"Adding new transaction for the Portfolio: {portfolio['portfolio_name']}")
-      print(f"Type of the Asset: {portfolio['portfolio_type']}")
-      print("---------------------")
-      print(f"Asset Code: {asset['asset_code']}")
+      print(asset_str)
       print(f"Transaction Type: {transaction_type}")
       print(f"Transaction Date (YYYY-MM-DD): {transaction_date}")
       print(f"Transaction Amount (in {asset['asset_code']}):")
@@ -281,10 +320,7 @@ def add_transaction_existing_asset(portfolio, asset, engine):
       transaction_amount = float(questionary.text(f"Enter Transaction Amount (in {asset['asset_code']}):").ask())
       is_amount_valid = True
       os.system("clear")
-      print(f"Adding new transaction for the Portfolio: {portfolio['portfolio_name']}")
-      print(f"Type of the Asset: {portfolio['portfolio_type']}")
-      print("---------------------")
-      print(f"Asset Code: {asset['asset_code']}")
+      print(asset_str)
       print(f"Transaction Type: {transaction_type}")
       print(f"Transaction Date (YYYY-MM-DD): {transaction_date}")
       print(f"Transaction Amount (in {asset['asset_code']}): {transaction_amount}")
@@ -303,10 +339,7 @@ def add_transaction_existing_asset(portfolio, asset, engine):
       transaction_price = float(questionary.text(f"Enter the Price ({asset['asset_code']}/USD):").ask())
       is_price_valid = True
       os.system("clear")
-      print(f"Adding new transaction for the Portfolio: {portfolio['portfolio_name']}")
-      print(f"Type of the Asset: {portfolio['portfolio_type']}")
-      print("---------------------")
-      print(f"Asset Code: {asset['asset_code']}")
+      print(asset_str)
       print(f"Transaction Type: {transaction_type}")
       print("Transaction Date (YYYY-MM-DD): {transaction_date}")
       print(f"Transaction Amount (in {asset['asset_code']}): {transaction_amount}")
@@ -326,7 +359,7 @@ def add_transaction_existing_asset(portfolio, asset, engine):
         new_sold_total_amount = asset['sold_total_amount'] + transaction_amount
         new_sold_total_currency = asset['sold_total_currency'] + transaction_amount_usd
         new_asset_fixed_profit_loss_currency = asset['asset_fixed_profit_loss_currency'] + (transaction_amount_usd - transaction_amount * asset['asset_avg_buy_price'])
-        new_asset_fixed_profit_loss_percentage = new_asset_fixed_profit_loss_currency / asset['sum_of_investments']
+        new_asset_fixed_profit_loss_percentage = (new_asset_fixed_profit_loss_currency / asset['sum_of_investments'])*100
         engine.execute(f"UPDATE assets_in_portfolio SET asset_holdings = {new_holdings}, asset_fixed_profit_loss_currency = {new_asset_fixed_profit_loss_currency}, asset_fixed_profit_loss_percentage = {new_asset_fixed_profit_loss_percentage}, sold_total_amount = {new_sold_total_amount}, sold_total_currency = {new_sold_total_currency}  WHERE asset_in_portfolio_id = {asset['asset_in_portfolio_id']}")
         engine.execute(f"INSERT INTO asset_transactions (transaction_amount, transaction_price, tranaction_type, asset_in_portfolio_id) VALUES ({transaction_amount}, {transaction_price}, '{transaction_type}', {asset['asset_in_portfolio_id']})")
       elif transaction_type == 'Buy':
@@ -335,7 +368,7 @@ def add_transaction_existing_asset(portfolio, asset, engine):
         new_buy_total_amount = asset['buy_total_amount'] + transaction_amount
         new_asset_avg_buy_price = new_sum_of_investments / new_buy_total_amount
         new_asset_fixed_profit_loss_currency = asset['sold_total_currency'] - asset['sold_total_amount'] * new_asset_avg_buy_price
-        new_asset_fixed_profit_loss_percentage = new_asset_fixed_profit_loss_currency / new_sum_of_investments
+        new_asset_fixed_profit_loss_percentage = (new_asset_fixed_profit_loss_currency / new_sum_of_investments)*100
         engine.execute(f"UPDATE assets_in_portfolio SET asset_holdings = {new_holdings}, sum_of_investments = {new_sum_of_investments}, buy_total_amount = {new_buy_total_amount}, asset_fixed_profit_loss_currency = {new_asset_fixed_profit_loss_currency}, asset_fixed_profit_loss_percentage = {new_asset_fixed_profit_loss_percentage}, asset_avg_buy_price = {new_asset_avg_buy_price}  WHERE asset_in_portfolio_id = {asset['asset_in_portfolio_id']}")
         engine.execute(f"INSERT INTO asset_transactions (transaction_amount, transaction_price, tranaction_type, asset_in_portfolio_id) VALUES ({transaction_amount}, {transaction_price}, '{transaction_type}', {asset['asset_in_portfolio_id']})")
     except: 

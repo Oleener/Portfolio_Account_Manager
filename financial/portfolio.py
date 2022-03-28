@@ -89,12 +89,12 @@ def get_portfolios(user_session, engine):
 # retrieve basic portfolio info
 def get_portfolio_info(portfolio, engine):
   assets_df = pd.read_sql_query(f"SELECT assets_in_portfolio.asset_in_portfolio_id, assets_in_portfolio.asset_code, assets_in_portfolio.asset_holdings, assets_in_portfolio.asset_avg_buy_price, assets_in_portfolio.asset_fixed_profit_loss_currency, assets_in_portfolio.asset_fixed_profit_loss_percentage, assets_in_portfolio.sum_of_investments, assets_in_portfolio.buy_total_amount, assets_in_portfolio.sold_total_amount, assets_in_portfolio.sold_total_currency,portfolio_types.portfolio_type FROM portfolios JOIN assets_in_portfolio ON assets_in_portfolio.portfolio_id = portfolios.portfolio_id JOIN portfolio_types ON portfolios.portfolio_type_id = portfolio_types.portfolio_type_id WHERE portfolios.portfolio_id = {portfolio['portfolio_id']}", con=engine)
-  # assets_df['current_price'] = [get_asset_price(row[0], row[1]) for row in zip(assets_df['portfolio_type'], assets_df['asset_code'])]
-  assets_df['current_price'] = get_assets_last_prices(portfolio['portfolio_type'], assets_df['asset_code'].to_list())
+
+  assets_df['current_price'] = [get_asset_price(row[0], row[1]) for row in zip(assets_df['portfolio_type'], assets_df['asset_code'])]
   assets_df['asset_balance'] = [float(row[0]) * float(row[1]) for row in zip(assets_df['asset_holdings'], assets_df['current_price'])]
   assets_df['asset_holdings_cost_avg_price'] = [row[0] * row[1] for row in zip(assets_df['asset_holdings'], assets_df['asset_avg_buy_price'])]
   assets_df['asset_total_profit_loss_currency'] = [row[0] + (row[1] - row[2] * row[3]) for row in zip(assets_df['asset_fixed_profit_loss_currency'], assets_df['asset_balance'], assets_df['asset_holdings'], assets_df['asset_avg_buy_price'])]
-  assets_df['asset_total_profit_loss_percentage'] = [row[0] + (row[1] - row[2] * row[3])/row[4] for row in zip(assets_df['asset_fixed_profit_loss_percentage'], assets_df['asset_balance'], assets_df['asset_holdings'], assets_df['asset_avg_buy_price'], assets_df['sum_of_investments'])]
+  assets_df['asset_total_profit_loss_percentage'] = [(row[0] + (row[1] - row[2] * row[3])/row[4])*100 for row in zip(assets_df['asset_fixed_profit_loss_percentage'], assets_df['asset_balance'], assets_df['asset_holdings'], assets_df['asset_avg_buy_price'], assets_df['sum_of_investments'])]
 
   portfolio['current_balance'] = assets_df['asset_balance'].sum()
   portfolio['sum_of_investments'] = assets_df['sum_of_investments'].sum()
