@@ -124,6 +124,7 @@ Test the function code. Use the text below as the payload for the Post method.
 1. To call the API and receive a trade recommendation, load the following libraries:
 
     a. ```import requests```
+    
     b. ```import json```
 
 2. Set a variable for the url.
