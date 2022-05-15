@@ -150,26 +150,36 @@ The powerpoint below summerizes the main points of Portfolio Account Manager ver
 
 ![powerpoint_2](https://github.com/Oleener/Portfolio_Account_Manager/blob/main/Instructions/Fintech%20-%20Project%202.pdf)
 
+The powerpoint below summerizes the main points of Portfolio Account Manager version 3 including the test blockchain and new Token Functionality.
+
+![powerpoint_3](https://github.com/Oleener/Portfolio_Account_Manager/blob/main/Instructions/Portfolio%20Account%20Manager%20V3.pdf)
+
 ---
 
 ## Contributors
 
-Portfolio Account Manager Brought To you by: 
+### Portfolio Account Manager Brought To you by: 
 
 Olena Shemedyuk (olenashemedyuk@gmail.com)
 Kirill Panov (us.kirpa1986@gmail.com)
 Isaiah Tensae (isaiahtensae@gmail.com)
 Nick Strohm (Strohm241@gmail.com)
 
-Portfolio Account Manager Version 2 Brought To you by:
+### Portfolio Account Manager Version 2 Brought To you by:
 
 Kirill Panov (us.kirpa1986@gmail.com)
 Rachel Donham (rachaeldonham@gmail.com)
 Isaiah Tensae (isaiahtensae@gmail.com)
 Olena Shemedyuk (olenashemedyuk@gmail.com)
 
----
+### Portfolio Account Manager Version 3 Brought To you by:
 
+Kirill Panov (us.kirpa1986@gmail.com)
+Isaiah Tensae (isaiahtensae@gmail.com)
+Olena Shemedyuk (olenashemedyuk@gmail.com)
+Nomi Enkhbold (nomienk28@gmail.com)
+
+---
 
 ## License 
 
