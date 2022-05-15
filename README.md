@@ -8,6 +8,8 @@ Version 2 of Portfolio Account Manager builds a model that returns a recommendat
 
 ## Technologies
 
+#### Portfolio Account Manager
+
 The project leverages Pyhton 3.7 with the following packages:
 
 * [ALPACA](https://github.com/alpacahq/alpaca-trade-api-python#:~:text=alpaca%2Dtrade%2Dapi%2Dpython%20is%20a%20python%20library%20for,REST%20and%20streaming%20data%20interfaces.) - Commission free trading API. 
@@ -34,7 +36,7 @@ The project leverages Pyhton 3.7 with the following packages:
 * [sqlalchemy](https://www.sqlalchemy.org/) - library that facilitates the communication between Python programs and databases.
 * [sys](https://docs.python.org/3/library/sys.html) - Provides functions and variables that are used to manipulate different parts of the python runtime enviorment.
 
-Project 2:
+#### Project 2:
 
 [How to Deploy an ML-Powered API Service](https://github.com/Oleener/Portfolio_Account_Manager/blob/main/Instructions/How%20to%20Deploy%20an%20ML-Powered%20API%20Service.md)
 
@@ -44,7 +46,7 @@ AWS Services used:
 * SageMaker
 * API Gateway
 * Lamnda
-    
+
 ---
 
 ## Installation Guide 
@@ -150,10 +152,6 @@ The powerpoint below summerizes the main points of Portfolio Account Manager ver
 
 ![powerpoint_2](https://github.com/Oleener/Portfolio_Account_Manager/blob/main/Instructions/Fintech%20-%20Project%202.pdf)
 
-The powerpoint below summerizes the main points of Portfolio Account Manager version 3 including the test blockchain and new Token Functionality.
-
-![powerpoint_3](https://github.com/Oleener/Portfolio_Account_Manager/blob/main/Instructions/Portfolio%20Account%20Manager%20V3.pdf)
-
 ---
 
 ## Contributors
@@ -171,13 +169,6 @@ Kirill Panov (us.kirpa1986@gmail.com)
 Rachel Donham (rachaeldonham@gmail.com)
 Isaiah Tensae (isaiahtensae@gmail.com)
 Olena Shemedyuk (olenashemedyuk@gmail.com)
-
-### Portfolio Account Manager Version 3 Brought To you by:
-
-Kirill Panov (us.kirpa1986@gmail.com)
-Isaiah Tensae (isaiahtensae@gmail.com)
-Olena Shemedyuk (olenashemedyuk@gmail.com)
-Nomi Enkhbold (nomienk28@gmail.com)
 
 ---
 
