@@ -99,8 +99,11 @@ Additionally to this README file the Powerpoint presentation available in the fo
 ### Portfolio Account Manager Version 3 Brought To you by:
 
 Kirill Panov (us.kirpa1986@gmail.com)
+
 Isaiah Tensae (isaiahtensae@gmail.com)
+
 Olena Shemedyuk (olenashemedyuk@gmail.com)
+
 Nomi Enkhbold (nomienk28@gmail.com)
 
 ---
