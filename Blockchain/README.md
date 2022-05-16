@@ -22,7 +22,6 @@ Additionally, this project uses the following packages:
 * web3 - A Python library used for interacting with Ethereum (TBD). It is used (will be used) in the main application (Portfolio Manager) to establish a connection to the test publicly available blockchain (hosted on AWS EC2) and to interact with the smart contracts deployed on that network. 
 
 
-
 ---
 
 ## Usage 
@@ -33,7 +32,7 @@ You can deploy and test these contracts locally or on test blockchain (run on AW
 * RPC URL: http://ec2-34-201-91-146.compute-1.amazonaws.com:7545
 * Chain ID: 1234
 
-![<deployed_contract>](./pics/deployed_contract.PNG)
+![<adding_network_metamask>](./pics/metamask_adding_network.png)
 
 After getting the connection established you can deploy KinoCoin.sol (no need to deploy Ownership.sol separately - it's inherited by KinoCoin.sol). The test network has 10 test accounts with the balance - you can use them for testing:
 
@@ -82,6 +81,10 @@ After getting the connection established you can deploy KinoCoin.sol (no need to
 (9) 0xbbc01ce30668b5146d8959a910a4145cbe32fbb01cec88a287bac2b99befa302
 
 The Ownership.sol contract defines Owner and SuperOwner (admin) role. Superowner (who is actually also owner) can add and remove other Owners as well as distribute the profit accumulated on the contract between the owners. Owners can request token total supply and get information about the ETH amount accumulated on the contract address. Regular users (not Owner or SuperOwner) can deposit and withdraw tokens through the corresponding functions defined in the contract. 
+
+Here is the screenshot of the deployed in Remix contract and the functions available (some of them are inherited from ERC20, others are defined in Ownership contract and in the token contract):
+
+![<deployed_contract>](./pics/deployed_contract.png)
 
 ---
 
