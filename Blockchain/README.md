@@ -1,6 +1,6 @@
 # Portfolio Account Manager V3
 Version 3 focuses on integrating Portfolio Manager with Ethereum Blockchain through creating an ERC20-compatible token and provide users with the ability to purchase and sell it as well as to get rewarded (new user is created, user has verified email, user purchases assets for the portfolio). For the owners of the Potfolio Manager tool the interaction with the blockchain and with the token allows to motetize the application and to attract more clients through the rewards system. This Blockchain folder consists of the following elements:
-* Smart contracts to create ERC20-compatible token and specific functions to manage the token
+* Smart contracts to create ERC20-compatible token and specific functions to manage the token and ownership
 * TBD - Libraries with functions and settings for integrating the main application (Portfolio Manager) with the blockchain (create and restore accounts (wallets), add/remove owners, purchase/sell tokens, manage the total supply of the token and Ethereum amount available on the contract for the owners).
  
 ---
@@ -78,6 +78,8 @@ After getting the connection established you can deploy KinoCoin.sol (no need to
 (8) 0x6aaa518d669c1a2bbd104f53d0953e9c370be3ba85517acdd182bf88f635c6fb
 
 (9) 0xbbc01ce30668b5146d8959a910a4145cbe32fbb01cec88a287bac2b99befa302
+
+The Ownership.sol contract defines Owner and SuperOwner (admin) role. Superowner (also owner) role can add and remove Owners as well as distribute the profit accumulated on the contract between the owners. Owners can request token total supply and get information about the ETH amount accumulated on the contract address. 
 
 ---
 
