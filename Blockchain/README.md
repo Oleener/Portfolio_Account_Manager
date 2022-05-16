@@ -32,9 +32,7 @@ You can deploy and test these contracts locally or on test blockchain (run on AW
 * RPC URL: http://ec2-34-201-91-146.compute-1.amazonaws.com:7545
 * Chain ID: 1234
 
-<div style="width:60px ; height:60px">
 ![<adding_network_metamask>](./pics/metamask_adding_network.png)
-</div>
 
 After getting the connection established you can deploy KinoCoin.sol (no need to deploy Ownership.sol separately - it's inherited by KinoCoin.sol). The test network has 10 test accounts with the balance - you can use them for testing:
 
