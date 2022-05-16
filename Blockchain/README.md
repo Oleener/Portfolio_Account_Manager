@@ -79,7 +79,7 @@ After getting the connection established you can deploy KinoCoin.sol (no need to
 
 (9) 0xbbc01ce30668b5146d8959a910a4145cbe32fbb01cec88a287bac2b99befa302
 
-The Ownership.sol contract defines Owner and SuperOwner (admin) role. Superowner (also owner) role can add and remove Owners as well as distribute the profit accumulated on the contract between the owners. Owners can request token total supply and get information about the ETH amount accumulated on the contract address. 
+The Ownership.sol contract defines Owner and SuperOwner (admin) role. Superowner (who is actually also owner) can add and remove other Owners as well as distribute the profit accumulated on the contract between the owners. Owners can request token total supply and get information about the ETH amount accumulated on the contract address. Regular users (not Owner or SuperOwner) can deposit and withdraw tokens through the corresponding functions defined in the contract. 
 
 ---
 
