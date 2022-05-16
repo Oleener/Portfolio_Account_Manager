@@ -21,11 +21,7 @@ Additionally, this project uses the following packages:
 
 * web3 - A Python library used for interacting with Ethereum (TBD). It is used (will be used) in the main application (Portfolio Manager) to establish a connection to the test publicly available blockchain (hosted on AWS EC2) and to interact with the smart contracts deployed on that network. 
 
----
 
-## Installation Guide 
-
-TBD
 
 ---
 
