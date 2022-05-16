@@ -39,8 +39,8 @@ You can deploy and test these contracts locally or on test blockchain (run on AW
 
 After getting the connection established you can deploy KinoCoin.sol (no need to deploy Ownership.sol separately - it's inherited by KinoCoin.sol). The test network has 10 test accounts with the balance - you can use them for testing:
 
-Available Accounts
-==================
+**Available Accounts:**
+
 (0) 0x9E770eB12148Aff8eD9481e8BB053b2eDCd466e3 (100 ETH)
 
 (1) 0x8444B3127e667ea2019515A0dd19e70a3f0F5dCC (100 ETH)
@@ -61,8 +61,7 @@ Available Accounts
 
 (9) 0xe84Ee126E82A365D25C7A15D5B729E8422b80cF3 (100 ETH)
 
-Private Keys
-==================
+**Private Keys**:
 (0) 0x32037ffd074a6186a5e5e72031a10e5ace3eea2c711b426e20f79bdf156916f3
 
 (1) 0x694d122049c4c69a72fceec375c536ca74d27882108137b9f771c9a3f5ed6cfc
