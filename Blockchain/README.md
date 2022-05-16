@@ -62,6 +62,7 @@ After getting the connection established you can deploy KinoCoin.sol (no need to
 (9) 0xe84Ee126E82A365D25C7A15D5B729E8422b80cF3 (100 ETH)
 
 **Private Keys**:
+
 (0) 0x32037ffd074a6186a5e5e72031a10e5ace3eea2c711b426e20f79bdf156916f3
 
 (1) 0x694d122049c4c69a72fceec375c536ca74d27882108137b9f771c9a3f5ed6cfc
@@ -86,9 +87,7 @@ After getting the connection established you can deploy KinoCoin.sol (no need to
 
 ## Presentation  
 
-The powerpoint below summerizes the main points of Portfolio Account Manager version 3 including the test blockchain and new Token/ownership Functionality.
-
-![powerpoint_3](https://github.com/Oleener/Portfolio_Account_Manager/blob/main/Instructions/Portfolio%20Account%20Manager%20V3.pdf)
+Additionally to this README file the Powerpoint presentation available in the folder also summarizes the goal and the features available/will be available in Portfolio Manager v. 3.
 
 ---
 
