@@ -34,7 +34,7 @@ You can deploy and test these contracts locally or on test blockchain (run on AW
 
 <div style="width:60px ; height:60px">
 ![<adding_network_metamask>](./pics/metamask_adding_network.png)
-<div>
+</div>
 
 After getting the connection established you can deploy KinoCoin.sol (no need to deploy Ownership.sol separately - it's inherited by KinoCoin.sol). The test network has 10 test accounts with the balance - you can use them for testing:
 
