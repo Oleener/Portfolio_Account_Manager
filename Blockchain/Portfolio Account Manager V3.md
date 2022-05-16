@@ -19,6 +19,8 @@ This Project uses the following packages:
 
 * Ganache - Personal Etherum blockchain which can use to run rests, execute commands, and inspect state while controlling how the chain operates. 
 
+* web3 - A Python library used for interacting with Ethereum.
+
 ---
 
 ## Installation Guide 
